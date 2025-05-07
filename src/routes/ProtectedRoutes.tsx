@@ -28,7 +28,14 @@ export const RequireAuth = () => {
 };
 
 // Higher-order component to restrict access based on user role
-export const RequireRole = ({ allowedRoles }: { allowedRoles: string[] }) => {
+// Updated to accept children prop
+export const RequireRole = ({ 
+  allowedRoles, 
+  children 
+}: { 
+  allowedRoles: string[],
+  children: React.ReactNode 
+}) => {
   const { user, isLoading } = useAuth();
 
   if (isLoading) {
@@ -53,5 +60,5 @@ export const RequireRole = ({ allowedRoles }: { allowedRoles: string[] }) => {
     );
   }
 
-  return <Outlet />;
+  return <>{children}</>;
 };
