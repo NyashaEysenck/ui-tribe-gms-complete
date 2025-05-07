@@ -48,8 +48,8 @@ const ProposalsPage: React.FC = () => {
 
   const handleDeleteOpportunity = async (id: string) => {
     try {
-      // Call the Supabase API to delete the opportunity
-      const { error } = await fetch(`/api/opportunities/${id}`, {
+      // Call the deleteOpportunity method from the useGrantsData hook
+      const { data, error } = await fetch(`/api/opportunities/${id}`, {
         method: "DELETE",
       }).then(res => res.json());
       

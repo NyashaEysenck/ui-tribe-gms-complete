@@ -6,9 +6,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { File, Plus, FileText, FileEdit } from "lucide-react";
+import { File, Plus, FileText, FileEdit, Loader2 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useGrantsData } from "@/hooks/useGrantsData";
+import { toast } from "sonner";
 
 const statusColors: Record<string, string> = {
   draft: "bg-slate-100 text-slate-800 border-slate-200",
@@ -23,13 +24,41 @@ const statusColors: Record<string, string> = {
 
 const MyGrants: React.FC = () => {
   const { user } = useAuth();
-  const { grants, loading } = useGrantsData();
+  const { grants, loading, fetchGrants } = useGrantsData();
   const [selectedGrant, setSelectedGrant] = useState<any>(null);
   const [showGrantDetails, setShowGrantDetails] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user) {
+      fetchGrants();
+    }
+  }, [user, fetchGrants]);
 
   const startNewApplication = () => {
     navigate("/grant-application");
+  };
+
+  const continueApplication = (grantId: string) => {
+    navigate(`/grant-application?id=${grantId}`);
+  };
+
+  const handleSubmitGrant = async (grantId: string) => {
+    try {
+      setSubmitting(true);
+      // In a real application, you would call an API to update the grant status
+      // For this demo, we'll simulate a delay and update
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      toast.success("Grant application submitted successfully");
+      fetchGrants(); // Refresh the grants list
+    } catch (error) {
+      console.error("Error submitting grant:", error);
+      toast.error("Failed to submit grant application");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const getTabCounts = () => {
@@ -77,7 +106,7 @@ const MyGrants: React.FC = () => {
     return (
       <div className="p-6">
         <div className="text-center py-12">
-          <div className="spinner mb-4"></div>
+          <Loader2 className="h-12 w-12 animate-spin mx-auto mb-4 text-primary" />
           <p className="text-muted-foreground">Loading grant data...</p>
         </div>
       </div>
@@ -133,7 +162,7 @@ const MyGrants: React.FC = () => {
                     <div className="col-span-5">Project</div>
                     <div className="col-span-2">Amount</div>
                     <div className="col-span-2">Dates</div>
-                    <div className="col-span-3">Status</div>
+                    <div className="col-span-3">Actions</div>
                   </div>
                   
                   {grants.length > 0 ? (
@@ -159,9 +188,19 @@ const MyGrants: React.FC = () => {
                             )}
                             <div>
                               <div className="font-medium">{grant.title}</div>
-                              <div className="text-xs text-muted-foreground">
-                                {grant.category.charAt(0).toUpperCase() + grant.category.slice(1)} • 
-                                {grant.fundingSource === "internal" ? " Internal" : " External"} funding
+                              <div className="flex items-center gap-2">
+                                <div className="text-xs text-muted-foreground">
+                                  {grant.category.charAt(0).toUpperCase() + grant.category.slice(1)} • 
+                                  {grant.fundingSource === "internal" ? " Internal" : " External"} funding
+                                </div>
+                                <Badge 
+                                  variant="outline" 
+                                  className={statusColors[grant.status]}
+                                >
+                                  {grant.status.replace(/_/g, " ").split(" ")
+                                    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                                    .join(" ")}
+                                </Badge>
                               </div>
                             </div>
                           </div>
@@ -177,17 +216,39 @@ const MyGrants: React.FC = () => {
                             </div>
                           </div>
                           <div className="col-span-3 flex items-center gap-2">
-                            <Badge 
-                              variant="outline" 
-                              className={statusColors[grant.status]}
-                            >
-                              {grant.status.replace(/_/g, " ").split(" ")
-                                .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-                                .join(" ")}
-                            </Badge>
-                            <Button variant="ghost" size="sm" onClick={() => handleViewGrant(grant)}>
-                              View
-                            </Button>
+                            {grant.status === 'draft' ? (
+                              <>
+                                <Button 
+                                  variant="default" 
+                                  size="sm" 
+                                  onClick={() => continueApplication(grant.id)}
+                                >
+                                  Continue
+                                </Button>
+                                <Button 
+                                  variant="outline" 
+                                  size="sm"
+                                  disabled={submitting} 
+                                  onClick={() => handleSubmitGrant(grant.id)}
+                                >
+                                  {submitting ? (
+                                    <Loader2 className="h-3 w-3 animate-spin mr-1" />
+                                  ) : null}
+                                  Submit
+                                </Button>
+                              </>
+                            ) : (
+                              <>
+                                <Button variant="outline" size="sm" onClick={() => handleViewGrant(grant)}>
+                                  View
+                                </Button>
+                                {['approved', 'active'].includes(grant.status) && (
+                                  <Button variant="outline" size="sm">
+                                    Submit Report
+                                  </Button>
+                                )}
+                              </>
+                            )}
                           </div>
                         </div>
                       ))
@@ -278,6 +339,14 @@ const MyGrants: React.FC = () => {
                   <div className="text-xs text-muted-foreground mt-1">
                     Reviewed on {selectedGrant.reviewedDate ? formatDate(selectedGrant.reviewedDate) : "N/A"}
                   </div>
+                </div>
+              )}
+
+              {['approved', 'active'].includes(selectedGrant.status) && (
+                <div className="pt-4 flex justify-end">
+                  <Button>
+                    Submit Progress Report
+                  </Button>
                 </div>
               )}
             </div>

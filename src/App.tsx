@@ -70,33 +70,18 @@ const App = () => (
             {/* Protected Routes - Authentication required */}
             <Route element={<RequireAuth />}>
               {/* Dashboard Routes with Role-Based Access */}
-              <Route path="/dashboard" element={
-                <Routes>
-                  <Route path="/" element={<Navigate to="" replace />} />
-                  <Route 
-                    path="/researcher" 
-                    element={<RequireRole allowedRoles={['researcher']} />} 
-                    children={[
-                      <Route index element={<ResearcherDashboard />} />
-                    ]} 
-                  />
-                  <Route 
-                    path="/grant-office" 
-                    element={<RequireRole allowedRoles={['grant_office']} />} 
-                    children={[
-                      <Route index element={<GrantOfficeDashboard />} />
-                    ]} 
-                  />
-                  <Route 
-                    path="/admin" 
-                    element={<RequireRole allowedRoles={['admin']} />} 
-                    children={[
-                      <Route index element={<AdminDashboard />} />
-                    ]} 
-                  />
-                  <Route index element={<DashboardRouter />} />
-                </Routes>
-              } />
+              <Route path="/dashboard" element={<DashboardRouter />}>
+                <Route path="/researcher" element={<RequireRole allowedRoles={['researcher']} />}>
+                  <Route index element={<ResearcherDashboard />} />
+                </Route>
+                <Route path="/grant-office" element={<RequireRole allowedRoles={['grant_office']} />}>
+                  <Route index element={<GrantOfficeDashboard />} />
+                </Route>
+                <Route path="/admin" element={<RequireRole allowedRoles={['admin']} />}>
+                  <Route index element={<AdminDashboard />} />
+                </Route>
+                <Route index element={<DashboardRedirect />} />
+              </Route>
               
               {/* Common Routes for All Authenticated Users */}
               <Route path="/notifications" element={<NotificationsPage />} />
@@ -120,6 +105,8 @@ const App = () => (
                 <Route path="/applications" element={<ApplicationsPage />} />
                 <Route path="/create-opportunity" element={<CreateOpportunityForm />} />
                 <Route path="/grant-review/:grantId" element={<GrantReviewForm />} />
+                <Route path="/edit-opportunity/:opportunityId" element={<CreateOpportunityForm />} />
+                <Route path="/opportunities/:opportunityId" element={<OpportunitiesList />} />
                 <Route path="/ip-management" element={<IntellectualPropertyPage />} />
                 <Route path="/agreements" element={<AgreementsPage />} />
               </Route>
@@ -141,8 +128,13 @@ const App = () => (
   </QueryClientProvider>
 );
 
-// Role-based dashboard router 
+// Simple wrapper component for nested routes
 const DashboardRouter = () => {
+  return <Routes><Route path="*" element={<DashboardRedirect />} /></Routes>;
+};
+
+// Role-based dashboard router 
+const DashboardRedirect = () => {
   const { user } = useAuth();
   
   if (!user) {

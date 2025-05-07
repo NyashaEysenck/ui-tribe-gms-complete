@@ -6,8 +6,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { File, Filter, Search } from "lucide-react";
+import { File, Filter, Search, Loader2 } from "lucide-react";
 import { Grant, GrantStatus } from "@/types/grants";
+import { useGrantsData } from "@/hooks/useGrantsData";
+import { toast } from "sonner";
 
 const statusColors: Record<GrantStatus, string> = {
   draft: "bg-slate-50 text-slate-700 border-slate-200",
@@ -21,29 +23,14 @@ const statusColors: Record<GrantStatus, string> = {
 };
 
 const ApplicationsPage: React.FC = () => {
-  const [applications, setApplications] = useState<Grant[]>([]);
+  const { grants, loading, fetchGrants, reviewGrantApplication } = useGrantsData();
   const [searchQuery, setSearchQuery] = useState("");
+  const [processingIds, setProcessingIds] = useState<string[]>([]);
   const navigate = useNavigate();
 
   useEffect(() => {
-    // In a real app, this would be an API call to fetch all grant applications
-    const fetchApplications = () => {
-      try {
-        // Get grants from localStorage for demo purposes
-        const storedGrants = JSON.parse(localStorage.getItem("au_gms_grants") || "[]");
-        // Only show submitted applications, not drafts
-        const submittedGrants = storedGrants.filter((grant: Grant) => 
-          grant.status !== "draft"
-        );
-        
-        setApplications(submittedGrants);
-      } catch (error) {
-        console.error("Error fetching applications:", error);
-      }
-    };
-
-    fetchApplications();
-  }, []);
+    fetchGrants();
+  }, [fetchGrants]);
 
   const handleReviewApplication = (grantId: string) => {
     navigate(`/grant-review/${grantId}`);
@@ -53,7 +40,28 @@ const ApplicationsPage: React.FC = () => {
     navigate(`/grant-details/${grantId}`);
   };
 
-  const filteredApplications = applications.filter(app => 
+  const handleQuickApproval = async (grantId: string) => {
+    try {
+      setProcessingIds(prev => [...prev, grantId]);
+      const success = await reviewGrantApplication(
+        grantId, 
+        'approved', 
+        'Application approved through quick action'
+      );
+      
+      if (success) {
+        toast.success("Application approved successfully");
+        fetchGrants();
+      }
+    } catch (error) {
+      console.error("Error approving application:", error);
+      toast.error("Failed to approve application");
+    } finally {
+      setProcessingIds(prev => prev.filter(id => id !== grantId));
+    }
+  };
+
+  const filteredApplications = grants.filter(app => 
     app.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
     app.researcherName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
     app.department?.toLowerCase().includes(searchQuery.toLowerCase())
@@ -96,6 +104,17 @@ const ApplicationsPage: React.FC = () => {
     return new Date(dateString).toLocaleDateString();
   };
 
+  if (loading) {
+    return (
+      <div className="p-6">
+        <div className="text-center py-12">
+          <Loader2 className="h-12 w-12 animate-spin mx-auto mb-4 text-primary" />
+          <p className="text-muted-foreground">Loading applications...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="p-6">
       <div className="flex items-center justify-between mb-6">
@@ -118,7 +137,7 @@ const ApplicationsPage: React.FC = () => {
 
       <Tabs defaultValue="review" className="space-y-6">
         <TabsList className="grid w-full md:w-auto md:inline-grid grid-cols-2 md:grid-cols-4">
-          <TabsTrigger value="review">Needs Review</TabsTrigger>
+          <TabsTrigger value="review">Needs Review ({getApplicationsForTab("review").length})</TabsTrigger>
           <TabsTrigger value="all">All Applications</TabsTrigger>
           <TabsTrigger value="approved">Approved</TabsTrigger>
           <TabsTrigger value="rejected">Rejected</TabsTrigger>
@@ -144,11 +163,11 @@ const ApplicationsPage: React.FC = () => {
               <CardContent>
                 <div className="rounded-md border">
                   <div className="grid grid-cols-12 bg-muted/50 p-3 text-sm font-medium">
-                    <div className="col-span-5">Project</div>
+                    <div className="col-span-4">Project</div>
                     <div className="col-span-2">Researcher</div>
-                    <div className="col-span-1">Amount</div>
+                    <div className="col-span-2">Amount</div>
                     <div className="col-span-2">Submitted</div>
-                    <div className="col-span-2">Status</div>
+                    <div className="col-span-2">Actions</div>
                   </div>
                   
                   {getApplicationsForTab(tab).length > 0 ? (
@@ -157,12 +176,18 @@ const ApplicationsPage: React.FC = () => {
                         key={app.id}
                         className="grid grid-cols-12 p-3 text-sm border-t hover:bg-muted/50 transition-colors"
                       >
-                        <div className="col-span-5 font-medium flex items-center gap-2">
+                        <div className="col-span-4 font-medium flex items-center gap-2">
                           <File className="h-4 w-4 text-[#cf2e2e]" />
                           <div>
                             <div className="font-medium">{app.title}</div>
                             <div className="text-xs text-muted-foreground">
                               {app.department || "No Department"} • {app.category.charAt(0).toUpperCase() + app.category.slice(1)}
+                              <Badge 
+                                variant="outline" 
+                                className={`ml-2 ${statusColors[app.status]}`}
+                              >
+                                {getStatusLabel(app.status)}
+                              </Badge>
                             </div>
                           </div>
                         </div>
@@ -175,35 +200,45 @@ const ApplicationsPage: React.FC = () => {
                           </Avatar>
                           <span>{app.researcherName || "Unknown"}</span>
                         </div>
-                        <div className="col-span-1">
+                        <div className="col-span-2 flex items-center">
                           {safeFormatNumber(app.amount)}
                         </div>
-                        <div className="col-span-2">
+                        <div className="col-span-2 flex items-center">
                           {safeFormatDate(app.submittedDate)}
                         </div>
                         <div className="col-span-2">
-                          <div className="flex items-center gap-2">
-                            <Badge 
-                              variant="outline" 
-                              className={statusColors[app.status]}
-                            >
-                              {getStatusLabel(app.status)}
-                            </Badge>
+                          <div className="flex items-center gap-1">
                             {(tab === "review" || app.status === "submitted" || app.status === "under_review") ? (
-                              <Button 
-                                variant="ghost" 
-                                size="sm" 
-                                onClick={() => handleReviewApplication(app.id)}
-                              >
-                                Review
-                              </Button>
+                              <>
+                                <Button 
+                                  variant="outline" 
+                                  size="sm" 
+                                  onClick={() => handleReviewApplication(app.id)}
+                                  className="whitespace-nowrap"
+                                >
+                                  Review Details
+                                </Button>
+                                <Button
+                                  variant="default"
+                                  size="sm"
+                                  onClick={() => handleQuickApproval(app.id)}
+                                  disabled={processingIds.includes(app.id)}
+                                  className="whitespace-nowrap"
+                                >
+                                  {processingIds.includes(app.id) ? (
+                                    <Loader2 className="h-3 w-3 animate-spin" />
+                                  ) : (
+                                    "Quick Approve"
+                                  )}
+                                </Button>
+                              </>
                             ) : (
                               <Button 
-                                variant="ghost" 
+                                variant="outline" 
                                 size="sm" 
                                 onClick={() => handleViewApplication(app.id)}
                               >
-                                View
+                                View Details
                               </Button>
                             )}
                           </div>
