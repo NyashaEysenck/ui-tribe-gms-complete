@@ -4,6 +4,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import LoginFormFields from "./LoginFormFields";
 import LoginFooter from "./LoginFooter";
 import { useLoginForm } from "@/hooks/useLoginForm";
+import { AlertCircle } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const LoginCard: React.FC = () => {
   const {
@@ -26,6 +28,19 @@ const LoginCard: React.FC = () => {
         </CardDescription>
       </CardHeader>
       <CardContent>
+        {locationMessage && (
+          <Alert className="mb-4 bg-green-50 border-green-200 text-green-800">
+            <AlertDescription>{locationMessage}</AlertDescription>
+          </Alert>
+        )}
+        
+        {loginError && (
+          <Alert variant="destructive" className="mb-4">
+            <AlertCircle className="h-4 w-4 mr-2" />
+            <AlertDescription>{loginError}</AlertDescription>
+          </Alert>
+        )}
+        
         <LoginFormFields
           email={email}
           setEmail={setEmail}

@@ -49,18 +49,21 @@ const MessagesPage: React.FC = () => {
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
               <span>Conversations</span>
-              <span className="text-sm bg-[#cf2e2e] text-white rounded-full px-2 py-1">
-                {messages.filter(m => m.unread).length}
-              </span>
+              {messages.filter(m => m.unread).length > 0 && (
+                <span className="text-sm bg-[#cf2e2e] text-white rounded-full px-2 py-1">
+                  {messages.filter(m => m.unread).length}
+                </span>
+              )}
             </CardTitle>
             <CardDescription>
               <div className="relative">
                 <Input 
                   placeholder="Search messages..." 
                   className="pl-8"
+                  aria-label="Search messages"
                 />
                 <div className="absolute left-2 top-1/2 transform -translate-y-1/2">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                   </svg>
                 </div>
@@ -68,19 +71,22 @@ const MessagesPage: React.FC = () => {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="space-y-2">
+            <div className="space-y-2" role="list">
               {messages.map((message) => (
                 <div
                   key={message.id}
+                  role="listitem"
                   className={`p-3 rounded-lg cursor-pointer transition-colors ${
                     message.unread
                       ? "bg-[#cf2e2e]/10 font-medium"
                       : "hover:bg-muted"
                   }`}
+                  tabIndex={0}
+                  aria-label={`Message from ${message.sender}: ${message.content}`}
                 >
                   <div className="flex items-center gap-3">
                     <Avatar>
-                      <AvatarImage src={message.avatar} />
+                      <AvatarImage src={message.avatar} alt={message.sender} />
                       <AvatarFallback>{message.sender[0]}</AvatarFallback>
                     </Avatar>
                     <div className="flex-1 min-w-0">
@@ -108,7 +114,7 @@ const MessagesPage: React.FC = () => {
           </CardHeader>
           <CardContent>
             <div className="flex flex-col h-[400px] justify-center items-center text-center text-muted-foreground">
-              <MessageSquare className="h-12 w-12 mb-4 opacity-20" />
+              <MessageSquare className="h-12 w-12 mb-4 opacity-20" aria-hidden="true" />
               <h3 className="text-lg font-medium">No conversation selected</h3>
               <p className="text-sm max-w-md">
                 Select a conversation from the list or start a new message to begin chatting.

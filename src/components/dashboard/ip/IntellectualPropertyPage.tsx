@@ -69,6 +69,8 @@ const IntellectualPropertyPage: React.FC = () => {
   
   const handleAddIP = (newIP: Omit<IPItem, "id">) => {
     setShowForm(false);
+    // Show feedback to user
+    toast.success("IP asset added successfully");
     // Trigger a refresh to fetch the latest data
     setRefreshTrigger(prev => prev + 1);
   };
@@ -92,8 +94,10 @@ const IntellectualPropertyPage: React.FC = () => {
             <Button 
               onClick={() => setShowForm(true)} 
               className="flex items-center"
+              disabled={isLoading}
+              aria-label="Add new IP asset"
             >
-              <PlusCircle className="h-4 w-4 mr-1" />
+              <PlusCircle className="h-4 w-4 mr-1" aria-hidden="true" />
               Add IP Asset
             </Button>
           </CardHeader>
@@ -108,7 +112,7 @@ const IntellectualPropertyPage: React.FC = () => {
                   onValueChange={setActiveTab}
                   className="mb-6"
                 >
-                  <TabsList>
+                  <TabsList aria-label="Filter IP assets by type">
                     <TabsTrigger value="all">All</TabsTrigger>
                     <TabsTrigger value="patent">Patents</TabsTrigger>
                     <TabsTrigger value="copyright">Copyrights</TabsTrigger>
@@ -118,11 +122,28 @@ const IntellectualPropertyPage: React.FC = () => {
                 </Tabs>
                 
                 {isLoading ? (
-                  <div className="flex justify-center items-center h-40">
+                  <div className="flex justify-center items-center h-40" aria-live="polite" aria-busy="true">
                     <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-au-purple"></div>
+                    <span className="sr-only">Loading...</span>
                   </div>
                 ) : (
-                  <IPTable items={filteredItems} />
+                  <>
+                    {filteredItems.length === 0 ? (
+                      <div className="text-center py-8 text-muted-foreground">
+                        <p>No {activeTab !== 'all' ? activeTab : 'IP'} assets found.</p>
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          onClick={() => setShowForm(true)} 
+                          className="mt-4"
+                        >
+                          Add your first IP asset
+                        </Button>
+                      </div>
+                    ) : (
+                      <IPTable items={filteredItems} />
+                    )}
+                  </>
                 )}
               </>
             )}
