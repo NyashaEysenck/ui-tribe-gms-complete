@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -264,7 +263,11 @@ const GrantApplicationForm = () => {
               </TabsContent>
               
               <TabsContent value="project-details">
-                <ProjectDetailsForm form={projectDetailsForm} onSubmit={handleProjectDetailsSubmit} />
+                <ProjectDetailsForm 
+                  form={projectDetailsForm} 
+                  onSubmit={handleProjectDetailsSubmit} 
+                  isActive={completedSections["basic-info"]}
+                />
               </TabsContent>
               
               <TabsContent value="budget">
