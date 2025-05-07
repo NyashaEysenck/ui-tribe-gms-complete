@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -15,6 +14,7 @@ import TeamMembersForm from "./application-sections/TeamMembersForm";
 import ReviewSubmitForm from "./application-sections/ReviewSubmitForm";
 import { useAuth } from "@/contexts/AuthContext";
 import { useGrantsData } from "@/hooks/useGrantsData";
+import { GrantStatus } from "@/types/grants"; // Import the GrantStatus type
 
 // Define schemas for each section
 const basicInfoSchema = z.object({
@@ -180,7 +180,7 @@ const GrantApplicationForm = () => {
         fundingSource: "internal", // Default to internal funding for now
         startDate: basicInfoForm.getValues().startDate.toISOString(),
         endDate: basicInfoForm.getValues().endDate.toISOString(),
-        status: "submitted"
+        status: "submitted" as GrantStatus // Cast string to GrantStatus type
       };
 
       console.log("Full application data:", applicationData);
