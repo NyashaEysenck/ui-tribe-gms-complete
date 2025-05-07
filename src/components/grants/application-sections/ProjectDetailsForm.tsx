@@ -2,6 +2,7 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { 
+  Form,
   FormField, 
   FormItem, 
   FormLabel, 
@@ -30,103 +31,101 @@ const ProjectDetailsForm: React.FC<ProjectDetailsFormProps> = ({ form, onSubmit,
   }
 
   return (
-    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-      <div className="space-y-4">
-        <FormField
-          control={form.control}
-          name="objectives"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Project Objectives</FormLabel>
-              <FormDescription>
-                Define clear, measurable objectives for your project.
-              </FormDescription>
-              <FormControl>
-                <Textarea 
-                  placeholder="List the main objectives of your project" 
-                  className="min-h-24"
-                  error={!!form.formState.errors.objectives}
-                  {...field} 
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <div className="space-y-4">
+          <FormField
+            control={form.control}
+            name="objectives"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Project Objectives</FormLabel>
+                <FormDescription>
+                  Define clear, measurable objectives for your project.
+                </FormDescription>
+                <FormControl>
+                  <Textarea 
+                    placeholder="List the main objectives of your project" 
+                    className="min-h-24"
+                    {...field} 
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-        <FormField
-          control={form.control}
-          name="methodology"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Methodology</FormLabel>
-              <FormDescription>
-                Describe the methods you will use to achieve your objectives.
-              </FormDescription>
-              <FormControl>
-                <Textarea 
-                  placeholder="Explain your approach and methodologies" 
-                  className="min-h-24"
-                  error={!!form.formState.errors.methodology}
-                  {...field} 
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+          <FormField
+            control={form.control}
+            name="methodology"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Methodology</FormLabel>
+                <FormDescription>
+                  Describe the methods you will use to achieve your objectives.
+                </FormDescription>
+                <FormControl>
+                  <Textarea 
+                    placeholder="Explain your approach and methodologies" 
+                    className="min-h-24"
+                    {...field} 
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-        <FormField
-          control={form.control}
-          name="expectedOutcomes"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Expected Outcomes</FormLabel>
-              <FormDescription>
-                What results do you expect from this project?
-              </FormDescription>
-              <FormControl>
-                <Textarea 
-                  placeholder="Describe the anticipated outcomes and impacts" 
-                  className="min-h-24"
-                  error={!!form.formState.errors.expectedOutcomes}
-                  {...field} 
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+          <FormField
+            control={form.control}
+            name="expectedOutcomes"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Expected Outcomes</FormLabel>
+                <FormDescription>
+                  What results do you expect from this project?
+                </FormDescription>
+                <FormControl>
+                  <Textarea 
+                    placeholder="Describe the anticipated outcomes and impacts" 
+                    className="min-h-24"
+                    {...field} 
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-        <FormField
-          control={form.control}
-          name="timeline"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Project Timeline</FormLabel>
-              <FormDescription>
-                Provide a timeline of key milestones.
-              </FormDescription>
-              <FormControl>
-                <Textarea 
-                  placeholder="Outline the timeline for implementing your project" 
-                  className="min-h-24"
-                  error={!!form.formState.errors.timeline}
-                  {...field} 
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-      </div>
+          <FormField
+            control={form.control}
+            name="timeline"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Project Timeline</FormLabel>
+                <FormDescription>
+                  Provide a timeline of key milestones.
+                </FormDescription>
+                <FormControl>
+                  <Textarea 
+                    placeholder="Outline the timeline for implementing your project" 
+                    className="min-h-24"
+                    {...field} 
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
 
-      <div className="flex justify-end">
-        <Button type="submit" className="min-w-[120px]">
-          Save and Continue
-        </Button>
-      </div>
-    </form>
+        <div className="flex justify-end">
+          <Button type="submit" className="min-w-[120px]">
+            Save and Continue
+          </Button>
+        </div>
+      </form>
+    </Form>
   );
 };
 
