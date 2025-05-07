@@ -14,7 +14,7 @@ import TeamMembersForm from "./application-sections/TeamMembersForm";
 import ReviewSubmitForm from "./application-sections/ReviewSubmitForm";
 import { useAuth } from "@/contexts/AuthContext";
 import { useGrantsData } from "@/hooks/useGrantsData";
-import { GrantStatus } from "@/types/grants"; // Import the GrantStatus type
+import { GrantStatus, GrantCategory } from "@/types/grants"; // Import both GrantStatus and GrantCategory types
 
 // Define schemas for each section
 const basicInfoSchema = z.object({
@@ -176,7 +176,7 @@ const GrantApplicationForm = () => {
         title: basicInfoForm.getValues().title,
         description: basicInfoForm.getValues().summary,
         amount: budgetForm.getValues().totalAmount,
-        category: basicInfoForm.getValues().category,
+        category: basicInfoForm.getValues().category as GrantCategory, // Cast string to GrantCategory type
         fundingSource: "internal", // Default to internal funding for now
         startDate: basicInfoForm.getValues().startDate.toISOString(),
         endDate: basicInfoForm.getValues().endDate.toISOString(),
