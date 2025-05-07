@@ -38,7 +38,7 @@ import {
 
 const ProposalsPage: React.FC = () => {
   const { user } = useAuth();
-  const { opportunities, loading, createGrantOpportunity } = useGrantsData();
+  const { opportunities, loading, createGrantOpportunity, fetchOpportunities } = useGrantsData();
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
 
@@ -48,13 +48,29 @@ const ProposalsPage: React.FC = () => {
 
   const handleDeleteOpportunity = async (id: string) => {
     try {
-      // Here you would call an API function to delete the opportunity
-      // For now, we'll just show a success message
+      // Call the Supabase API to delete the opportunity
+      const { error } = await fetch(`/api/opportunities/${id}`, {
+        method: "DELETE",
+      }).then(res => res.json());
+      
+      if (error) throw new Error(error.message);
+      
+      // Refresh the opportunities list
+      await fetchOpportunities();
+      
       toast.success("Grant opportunity deleted successfully");
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error deleting opportunity:", error);
       toast.error("Failed to delete opportunity");
     }
+  };
+
+  const handleEditOpportunity = (opportunityId: string) => {
+    navigate(`/edit-opportunity/${opportunityId}`);
+  };
+
+  const handleViewOpportunity = (opportunityId: string) => {
+    navigate(`/opportunities/${opportunityId}`);
   };
 
   const filteredOpportunities = opportunities.filter(opportunity => 
@@ -122,7 +138,12 @@ const ProposalsPage: React.FC = () => {
                     {opportunity.fundingSource === "internal" ? "Internal" : "External"}
                   </Badge>
                   <div className="flex space-x-1">
-                    <Button variant="ghost" size="icon" className="h-8 w-8">
+                    <Button 
+                      variant="ghost" 
+                      size="icon" 
+                      className="h-8 w-8"
+                      onClick={() => handleEditOpportunity(opportunity.id)}
+                    >
                       <Edit className="h-4 w-4" />
                     </Button>
                     <AlertDialog>
@@ -174,12 +195,23 @@ const ProposalsPage: React.FC = () => {
               </CardContent>
               <div className="p-3 pt-0 flex justify-end">
                 {opportunity.applicationUrl ? (
-                  <Button variant="outline" size="sm" className="w-full flex items-center justify-center">
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="w-full flex items-center justify-center"
+                    onClick={() => window.open(opportunity.applicationUrl, "_blank")}
+                  >
                     <ExternalLink className="h-3 w-3 mr-1" />
                     External Application
                   </Button>
                 ) : (
-                  <Button size="sm" className="w-full">View Details</Button>
+                  <Button 
+                    size="sm" 
+                    className="w-full"
+                    onClick={() => handleViewOpportunity(opportunity.id)}
+                  >
+                    View Details
+                  </Button>
                 )}
               </div>
             </Card>
