@@ -1,13 +1,14 @@
+
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { Grant } from "@/types/grants";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { File, Plus, FileText, FileEdit } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { useGrantsData } from "@/hooks/useGrantsData";
 
 const statusColors: Record<string, string> = {
   draft: "bg-slate-100 text-slate-800 border-slate-200",
@@ -22,31 +23,10 @@ const statusColors: Record<string, string> = {
 
 const MyGrants: React.FC = () => {
   const { user } = useAuth();
-  const [grants, setGrants] = useState<Grant[]>([]);
-  const [selectedGrant, setSelectedGrant] = useState<Grant | null>(null);
+  const { grants, loading } = useGrantsData();
+  const [selectedGrant, setSelectedGrant] = useState<any>(null);
   const [showGrantDetails, setShowGrantDetails] = useState(false);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    // In a real app, this would be an API call to fetch the user's grants
-    const fetchGrants = () => {
-      try {
-        // Get grants from localStorage for demo purposes
-        const storedGrants = JSON.parse(localStorage.getItem("au_gms_grants") || "[]");
-        
-        // Filter grants to show only those belonging to the current user
-        const userGrants = storedGrants.filter(
-          (grant: Grant) => grant.researcherId === user?.id
-        );
-        
-        setGrants(userGrants);
-      } catch (error) {
-        console.error("Error fetching grants:", error);
-      }
-    };
-
-    fetchGrants();
-  }, [user?.id]);
 
   const startNewApplication = () => {
     navigate("/grant-application");
@@ -75,12 +55,13 @@ const MyGrants: React.FC = () => {
 
   const tabCounts = getTabCounts();
 
-  const handleViewGrant = (grant: Grant) => {
+  const handleViewGrant = (grant: any) => {
     setSelectedGrant(grant);
     setShowGrantDetails(true);
   };
 
   const formatDate = (dateString: string) => {
+    if (!dateString) return "N/A";
     return new Date(dateString).toLocaleDateString();
   };
 
@@ -91,6 +72,17 @@ const MyGrants: React.FC = () => {
     }
     return `$${value.toLocaleString()}`;
   };
+
+  if (loading) {
+    return (
+      <div className="p-6">
+        <div className="text-center py-12">
+          <div className="spinner mb-4"></div>
+          <p className="text-muted-foreground">Loading grant data...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-6">
@@ -178,10 +170,10 @@ const MyGrants: React.FC = () => {
                           </div>
                           <div className="col-span-2 flex flex-col justify-center">
                             <div className="text-xs">
-                              {grant.startDate ? new Date(grant.startDate).toLocaleDateString() : 'N/A'} - 
+                              {grant.startDate ? formatDate(grant.startDate) : 'N/A'} - 
                             </div>
                             <div className="text-xs">
-                              {grant.endDate ? new Date(grant.endDate).toLocaleDateString() : 'N/A'}
+                              {grant.endDate ? formatDate(grant.endDate) : 'N/A'}
                             </div>
                           </div>
                           <div className="col-span-3 flex items-center gap-2">

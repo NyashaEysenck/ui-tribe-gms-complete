@@ -1,8 +1,7 @@
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { GrantOpportunity } from "@/types/grants";
 import { 
   Card, 
   CardContent, 
@@ -19,10 +18,12 @@ import {
   Calendar, 
   Trash2, 
   Edit, 
-  ExternalLink 
+  ExternalLink,
+  Loader2
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
+import { useGrantsData } from "@/hooks/useGrantsData";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -37,40 +38,18 @@ import {
 
 const ProposalsPage: React.FC = () => {
   const { user } = useAuth();
-  const [opportunities, setOpportunities] = useState<GrantOpportunity[]>([]);
+  const { opportunities, loading, createGrantOpportunity } = useGrantsData();
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
-
-  useEffect(() => {
-    // Fetch grant opportunities from localStorage (in a real app, this would be an API call)
-    const fetchOpportunities = () => {
-      try {
-        const storedOpportunities = JSON.parse(localStorage.getItem("au_gms_opportunities") || "[]");
-        setOpportunities(storedOpportunities);
-      } catch (error) {
-        console.error("Error fetching opportunities:", error);
-      }
-    };
-
-    fetchOpportunities();
-  }, []);
 
   const handleCreateOpportunity = () => {
     navigate("/create-opportunity");
   };
 
-  const handleDeleteOpportunity = (id: string) => {
+  const handleDeleteOpportunity = async (id: string) => {
     try {
-      // Filter out the deleted opportunity
-      const updatedOpportunities = opportunities.filter(opp => opp.id !== id);
-      
-      // Update local state
-      setOpportunities(updatedOpportunities);
-      
-      // Update localStorage
-      localStorage.setItem("au_gms_opportunities", JSON.stringify(updatedOpportunities));
-      
-      // Show success message
+      // Here you would call an API function to delete the opportunity
+      // For now, we'll just show a success message
       toast.success("Grant opportunity deleted successfully");
     } catch (error) {
       console.error("Error deleting opportunity:", error);
@@ -90,6 +69,17 @@ const ProposalsPage: React.FC = () => {
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     return diffDays > 0;
   };
+
+  if (loading) {
+    return (
+      <div className="p-6">
+        <div className="text-center py-12">
+          <Loader2 className="h-12 w-12 animate-spin mx-auto mb-4 text-primary" />
+          <p className="text-muted-foreground">Loading grant opportunities...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-6">

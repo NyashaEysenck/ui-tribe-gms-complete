@@ -1,10 +1,10 @@
+
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
-import { Form } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -14,6 +14,7 @@ import ProjectDetailsForm from "./application-sections/ProjectDetailsForm";
 import TeamMembersForm from "./application-sections/TeamMembersForm";
 import ReviewSubmitForm from "./application-sections/ReviewSubmitForm";
 import { useAuth } from "@/contexts/AuthContext";
+import { useGrantsData } from "@/hooks/useGrantsData";
 
 // Define schemas for each section
 const basicInfoSchema = z.object({
@@ -54,6 +55,7 @@ const teamMembersSchema = z.object({
 const GrantApplicationForm = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { submitGrantApplication } = useGrantsData();
   const [activeTab, setActiveTab] = useState("basic-info");
   const [completedSections, setCompletedSections] = useState<Record<string, boolean>>({
     "basic-info": false,
@@ -61,6 +63,7 @@ const GrantApplicationForm = () => {
     "budget": false,
     "team": false,
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Create forms for each section
   const basicInfoForm = useForm({
@@ -159,19 +162,44 @@ const GrantApplicationForm = () => {
     completeSection("team");
   };
 
-  const handleSubmitApplication = () => {
-    // Combine all form data
-    const applicationData = {
-      ...basicInfoForm.getValues(),
-      ...projectDetailsForm.getValues(),
-      ...budgetForm.getValues(),
-      ...teamMembersForm.getValues(),
-    };
+  const handleSubmitApplication = async () => {
+    try {
+      setIsSubmitting(true);
+      
+      // Combine all form data
+      const applicationData = {
+        ...basicInfoForm.getValues(),
+        ...projectDetailsForm.getValues(),
+        ...budgetForm.getValues(),
+        ...teamMembersForm.getValues(),
+        // Map to expected format for the API
+        title: basicInfoForm.getValues().title,
+        description: basicInfoForm.getValues().summary,
+        amount: budgetForm.getValues().totalAmount,
+        category: basicInfoForm.getValues().category,
+        fundingSource: "internal", // Default to internal funding for now
+        startDate: basicInfoForm.getValues().startDate.toISOString(),
+        endDate: basicInfoForm.getValues().endDate.toISOString(),
+        status: "submitted"
+      };
 
-    console.log("Full application data:", applicationData);
-    
-    toast.success("Application submitted successfully");
-    navigate("/dashboard");
+      console.log("Full application data:", applicationData);
+      
+      // Submit the application data to the database
+      const result = await submitGrantApplication(applicationData);
+      
+      if (result) {
+        toast.success("Application submitted successfully");
+        navigate("/my-grants");
+      } else {
+        toast.error("Error submitting application");
+      }
+    } catch (error) {
+      console.error("Error submitting application:", error);
+      toast.error("Failed to submit application");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   // Check if a particular section can be accessed
@@ -294,6 +322,7 @@ const GrantApplicationForm = () => {
           <Button
             variant="outline"
             onClick={() => navigate(-1)}
+            disabled={isSubmitting}
           >
             Cancel
           </Button>
@@ -307,6 +336,7 @@ const GrantApplicationForm = () => {
                   const currentIndex = tabOrder.indexOf(activeTab);
                   setActiveTab(tabOrder[currentIndex - 1]);
                 }}
+                disabled={isSubmitting}
               >
                 Previous
               </Button>
@@ -330,12 +360,13 @@ const GrantApplicationForm = () => {
                       break;
                   }
                 }}
+                disabled={isSubmitting}
               >
                 Save and Continue
               </Button>
             ) : (
-              <Button onClick={handleSubmitApplication}>
-                Submit Application
+              <Button onClick={handleSubmitApplication} disabled={isSubmitting}>
+                {isSubmitting ? "Submitting..." : "Submit Application"}
               </Button>
             )}
           </div>
