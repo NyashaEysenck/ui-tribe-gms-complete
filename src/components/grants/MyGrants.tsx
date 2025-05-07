@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -30,11 +29,8 @@ const MyGrants: React.FC = () => {
   const [submitting, setSubmitting] = useState(false);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (user) {
-      fetchGrants();
-    }
-  }, [user, fetchGrants]);
+  // Remove the duplicate useEffect that causes infinite loop
+  // The data is already fetched by the useGrantsData hook
 
   const startNewApplication = () => {
     navigate("/grant-application");

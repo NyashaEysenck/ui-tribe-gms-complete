@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/auth/useAuth";
 import { toast } from "sonner";
@@ -10,8 +10,8 @@ export function useGrantsData() {
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
   
-  // Fetch grants based on user role
-  const fetchGrants = async () => {
+  // Use useCallback to prevent infinite re-renders
+  const fetchGrants = useCallback(async () => {
     if (!user) return;
     
     try {
@@ -55,10 +55,10 @@ export function useGrantsData() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user]); // Add user to dependency array
   
-  // Fetch grant opportunities
-  const fetchOpportunities = async () => {
+  // Use useCallback for fetchOpportunities as well
+  const fetchOpportunities = useCallback(async () => {
     try {
       const { data, error } = await supabase
         .from('grant_opportunities')
@@ -87,7 +87,7 @@ export function useGrantsData() {
       console.error("Error fetching grant opportunities:", error);
       toast.error("Failed to load grant opportunities: " + error.message);
     }
-  };
+  }, []); // Empty dependency array since it doesn't depend on any props or state
   
   // Submit a new grant application
   const submitGrantApplication = async (grant: Partial<Grant>) => {
@@ -318,13 +318,13 @@ export function useGrantsData() {
     }
   };
   
-  // Load data on component mount
+  // Load data on component mount with useEffect
   useEffect(() => {
     if (user) {
       fetchGrants();
       fetchOpportunities();
     }
-  }, [user]);
+  }, [user, fetchGrants, fetchOpportunities]); // Add the callback functions to the dependency array
   
   return {
     grants,
