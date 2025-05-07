@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { UserRole } from "@/types/auth";
+import { Home } from "lucide-react";
 
 const RegisterForm: React.FC = () => {
   const [name, setName] = useState("");
@@ -54,6 +55,14 @@ const RegisterForm: React.FC = () => {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-au-neutral-100 py-10">
+      <div className="fixed top-4 left-4 z-10">
+        <Button asChild variant="ghost" size="sm" className="flex items-center gap-1">
+          <Link to="/">
+            <Home className="h-4 w-4" />
+            <span>Home</span>
+          </Link>
+        </Button>
+      </div>
       <Card className="w-full max-w-md shadow-lg">
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl font-bold text-center">Create an Account</CardTitle>

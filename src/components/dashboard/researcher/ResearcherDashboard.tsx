@@ -60,7 +60,7 @@ const ResearcherDashboard: React.FC = () => {
         {/* Quick Actions */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
           <Card className="card-hover col-span-1">
-            <CardContent className="p-6 flex flex-col items-center text-center">
+            <CardContent className="p-6 flex flex-col items-center text-center justify-center h-full">
               <Button asChild size="lg" className="w-full bg-au-purple hover:bg-au-purple-dark mb-2">
                 <Link to="/new-application">Start New Application</Link>
               </Button>
@@ -69,7 +69,7 @@ const ResearcherDashboard: React.FC = () => {
           </Card>
           
           <Card className="card-hover col-span-1">
-            <CardContent className="p-6 flex flex-col items-center text-center">
+            <CardContent className="p-6 flex flex-col items-center text-center justify-center h-full">
               <Button asChild size="lg" variant="outline" className="w-full mb-2">
                 <Link to="/opportunities">
                   <Search className="h-4 w-4 mr-2" />
@@ -81,7 +81,7 @@ const ResearcherDashboard: React.FC = () => {
           </Card>
           
           <Card className="card-hover col-span-1">
-            <CardContent className="p-6 flex flex-col items-center text-center">
+            <CardContent className="p-6 flex flex-col items-center text-center justify-center h-full">
               <Button asChild size="lg" variant="outline" className="w-full mb-2">
                 <Link to="/reports/new">
                   <FileText className="h-4 w-4 mr-2" />
@@ -93,7 +93,7 @@ const ResearcherDashboard: React.FC = () => {
           </Card>
           
           <Card className="card-hover col-span-1">
-            <CardContent className="p-6 flex flex-col items-center text-center">
+            <CardContent className="p-6 flex flex-col items-center text-center justify-center h-full">
               <Button asChild size="lg" variant="outline" className="w-full mb-2">
                 <Link to="/calendar">
                   <Calendar className="h-4 w-4 mr-2" />
