@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, Outlet } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import React from "react";
 
@@ -52,6 +52,25 @@ import { useAuth } from "@/contexts/auth/useAuth";
 
 const queryClient = new QueryClient();
 
+// Create role-specific route wrappers to use with <Outlet>
+const ResearcherRoute = () => (
+  <RequireRole allowedRoles={['researcher', 'admin']}>
+    <Outlet />
+  </RequireRole>
+);
+
+const GrantOfficeRoute = () => (
+  <RequireRole allowedRoles={['grant_office', 'admin']}>
+    <Outlet />
+  </RequireRole>
+);
+
+const AdminRoute = () => (
+  <RequireRole allowedRoles={['admin']}>
+    <Outlet />
+  </RequireRole>
+);
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <BrowserRouter>
@@ -97,8 +116,8 @@ const App = () => (
               <Route path="/notifications" element={<NotificationsPage />} />
               <Route path="/settings" element={<SettingsPage />} />
               
-              {/* Researcher Routes */}
-              <Route element={<RequireRole allowedRoles={['researcher', 'admin']} />}>
+              {/* Researcher Routes - Using the wrapper component */}
+              <Route element={<ResearcherRoute />}>
                 <Route path="/my-grants" element={<MyGrants />} />
                 <Route path="/opportunities" element={<OpportunitiesList />} />
                 <Route path="/reports" element={<ReportsPage />} />
@@ -107,8 +126,8 @@ const App = () => (
                 <Route path="/new-application" element={<GrantApplicationForm />} />
               </Route>
               
-              {/* Grant Office Routes */}
-              <Route element={<RequireRole allowedRoles={['grant_office', 'admin']} />}>
+              {/* Grant Office Routes - Using the wrapper component */}
+              <Route element={<GrantOfficeRoute />}>
                 <Route path="/reporting" element={<ReportingPage />} />
                 <Route path="/proposals" element={<ProposalsPage />} />
                 <Route path="/finance" element={<FinancePage />} />
@@ -121,8 +140,8 @@ const App = () => (
                 <Route path="/agreements" element={<AgreementsPage />} />
               </Route>
               
-              {/* Admin Only Routes */}
-              <Route element={<RequireRole allowedRoles={['admin']} />}>
+              {/* Admin Only Routes - Using the wrapper component */}
+              <Route element={<AdminRoute />}>
                 <Route path="/admin-settings" element={<AdminSettingsPage />} />
                 <Route path="/users" element={<UserManagementPage />} />
                 <Route path="/system-reports" element={<SystemReportsPage />} />
