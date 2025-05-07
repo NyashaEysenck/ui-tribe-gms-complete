@@ -33,7 +33,7 @@ import { useRoleBasedAccess } from "@/hooks/useRoleBasedAccess";
 export const AppSidebar: React.FC = () => {
   const { user, logout } = useAuth();
   const location = useLocation();
-  const { getRoleBasedValue } = useRoleBasedAccess();
+  const { getRoleBasedValue, getFormattedRole } = useRoleBasedAccess();
   
   if (!user) return null;
   
@@ -154,6 +154,16 @@ export const AppSidebar: React.FC = () => {
         icon: <BarChart2 className="h-4 w-4 mr-2" />,
       },
       {
+        name: "Applications",
+        path: "/applications", 
+        icon: <File className="h-4 w-4 mr-2" />,
+      },
+      {
+        name: "Reporting",
+        path: "/reporting",
+        icon: <FileText className="h-4 w-4 mr-2" />,
+      },
+      {
         name: "Notifications",
         path: "/notifications",
         icon: <Bell className="h-4 w-4 mr-2" />,
@@ -233,7 +243,7 @@ export const AppSidebar: React.FC = () => {
           <div>
             <p className="text-sm font-medium">{user.name}</p>
             <p className="text-xs text-muted-foreground capitalize">
-              {user.role.replace("_", " ")}
+              {getFormattedRole()}
             </p>
           </div>
         </div>

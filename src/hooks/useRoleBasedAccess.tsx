@@ -60,6 +60,24 @@ export function useRoleBasedAccess() {
   const isAdmin = (): boolean => {
     return user?.role === 'admin';
   };
+  
+  /**
+   * Gets the user's current role, standardized for display
+   */
+  const getFormattedRole = (): string => {
+    if (!user) return '';
+    
+    switch (user.role) {
+      case 'researcher':
+        return 'Researcher';
+      case 'grant_office':
+        return 'Grant Office';
+      case 'admin':
+        return 'Administrator';
+      default:
+        return user.role;
+    }
+  };
 
   return {
     hasPermission,
@@ -67,6 +85,7 @@ export function useRoleBasedAccess() {
     isResearcher,
     isGrantOffice,
     isAdmin,
+    getFormattedRole,
     role: user?.role
   };
 }

@@ -4,26 +4,38 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { BarChart2, Download, FileText, Filter, Plus, PieChart } from "lucide-react";
+import { 
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
+} from "@/components/ui/table";
 
 const ReportingPage: React.FC = () => {
   return (
     <div className="p-6">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold">Grant Reporting</h1>
+        <div className="flex items-center">
+          <BarChart2 className="h-6 w-6 mr-2 text-[#cf2e2e]" />
+          <h1 className="text-2xl font-bold">Grant Reporting</h1>
+        </div>
         <div className="flex gap-2">
           <Button variant="outline" className="flex items-center gap-2">
             <Download className="h-4 w-4" />
-            Export
+            <span className="hidden md:inline">Export</span>
           </Button>
           <Button variant="red" className="flex items-center gap-2">
             <Plus className="h-4 w-4" />
-            Generate Report
+            <span className="hidden md:inline">Generate Report</span>
           </Button>
         </div>
       </div>
 
       <Tabs defaultValue="overview" className="space-y-6">
-        <TabsList className="grid w-full md:w-auto md:inline-grid grid-cols-2 md:grid-cols-4">
+        <TabsList className="grid w-full md:w-auto md:inline-grid grid-cols-2 md:grid-cols-4 mb-6">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="researchers">Researchers</TabsTrigger>
           <TabsTrigger value="grants">Grants</TabsTrigger>
@@ -31,7 +43,7 @@ const ReportingPage: React.FC = () => {
         </TabsList>
 
         <TabsContent value="overview">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
@@ -174,37 +186,38 @@ const ReportingPage: React.FC = () => {
               </div>
             </CardHeader>
             <CardContent>
-              <div className="rounded-md border">
-                <div className="grid grid-cols-12 bg-muted/50 p-3 text-sm font-medium">
-                  <div className="col-span-3">Researcher</div>
-                  <div className="col-span-2">Department</div>
-                  <div className="col-span-2">Active Grants</div>
-                  <div className="col-span-2">Success Rate</div>
-                  <div className="col-span-3">Total Funding</div>
-                </div>
-                {Array.from({ length: 7 }).map((_, i) => (
-                  <div 
-                    key={i}
-                    className="grid grid-cols-12 p-3 text-sm border-t hover:bg-muted/50 transition-colors"
-                  >
-                    <div className="col-span-3 font-medium">
-                      {["John Doe", "Jane Smith", "Robert Johnson", "Emma Wilson", "David Lee", "Sarah Thompson", "Michael Brown"][i]}
-                    </div>
-                    <div className="col-span-2">
-                      {["Computer Science", "Engineering", "Medicine", "Agriculture", "Physics", "Economics", "Chemistry"][i]}
-                    </div>
-                    <div className="col-span-2">
-                      {Math.floor(Math.random() * 5) + 1}
-                    </div>
-                    <div className="col-span-2">
-                      {Math.floor(Math.random() * 50) + 20}%
-                    </div>
-                    <div className="col-span-3">
-                      ${(Math.floor(Math.random() * 500) + 50) * 1000}
-                    </div>
-                  </div>
-                ))}
-              </div>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Researcher</TableHead>
+                    <TableHead>Department</TableHead>
+                    <TableHead>Active Grants</TableHead>
+                    <TableHead>Success Rate</TableHead>
+                    <TableHead>Total Funding</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {Array.from({ length: 7 }).map((_, i) => (
+                    <TableRow key={i}>
+                      <TableCell className="font-medium">
+                        {["John Doe", "Jane Smith", "Robert Johnson", "Emma Wilson", "David Lee", "Sarah Thompson", "Michael Brown"][i]}
+                      </TableCell>
+                      <TableCell>
+                        {["Computer Science", "Engineering", "Medicine", "Agriculture", "Physics", "Economics", "Chemistry"][i]}
+                      </TableCell>
+                      <TableCell>
+                        {Math.floor(Math.random() * 5) + 1}
+                      </TableCell>
+                      <TableCell>
+                        {Math.floor(Math.random() * 50) + 20}%
+                      </TableCell>
+                      <TableCell>
+                        ${(Math.floor(Math.random() * 500) + 50) * 1000}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
             </CardContent>
           </Card>
         </TabsContent>
@@ -275,45 +288,46 @@ const ReportingPage: React.FC = () => {
                 </Card>
               </div>
               
-              <div className="rounded-md border">
-                <div className="grid grid-cols-12 bg-muted/50 p-3 text-sm font-medium">
-                  <div className="col-span-3">Grant Title</div>
-                  <div className="col-span-2">Researcher</div>
-                  <div className="col-span-2">Amount</div>
-                  <div className="col-span-2">Start Date</div>
-                  <div className="col-span-3">Status</div>
-                </div>
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <div 
-                    key={i}
-                    className="grid grid-cols-12 p-3 text-sm border-t hover:bg-muted/50 transition-colors"
-                  >
-                    <div className="col-span-3 font-medium truncate pr-4">
-                      {["Climate Change Adaptation", "Agricultural Technology", "Renewable Energy Solutions", "Public Health Interventions", "Educational Innovation"][i]} Research
-                    </div>
-                    <div className="col-span-2">
-                      {["John Doe", "Jane Smith", "Robert Johnson", "Emma Wilson", "David Lee"][i]}
-                    </div>
-                    <div className="col-span-2">
-                      ${(Math.floor(Math.random() * 200) + 50) * 1000}
-                    </div>
-                    <div className="col-span-2">
-                      {["2023-01-15", "2023-03-22", "2023-05-10", "2023-07-05", "2023-09-18"][i]}
-                    </div>
-                    <div className="col-span-3">
-                      <span className={`inline-block px-2 py-1 rounded-full text-xs ${
-                        ["Active", "Completed", "Active", "Pending", "Active"][i] === "Active" 
-                          ? "bg-green-100 text-green-800" 
-                          : ["Active", "Completed", "Active", "Pending", "Active"][i] === "Completed"
-                          ? "bg-blue-100 text-blue-800"
-                          : "bg-yellow-100 text-yellow-800"
-                      }`}>
-                        {["Active", "Completed", "Active", "Pending", "Active"][i]}
-                      </span>
-                    </div>
-                  </div>
-                ))}
-              </div>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Grant Title</TableHead>
+                    <TableHead>Researcher</TableHead>
+                    <TableHead>Amount</TableHead>
+                    <TableHead>Start Date</TableHead>
+                    <TableHead>Status</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <TableRow key={i}>
+                      <TableCell className="font-medium max-w-[200px] truncate">
+                        {["Climate Change Adaptation", "Agricultural Technology", "Renewable Energy Solutions", "Public Health Interventions", "Educational Innovation"][i]} Research
+                      </TableCell>
+                      <TableCell>
+                        {["John Doe", "Jane Smith", "Robert Johnson", "Emma Wilson", "David Lee"][i]}
+                      </TableCell>
+                      <TableCell>
+                        ${(Math.floor(Math.random() * 200) + 50) * 1000}
+                      </TableCell>
+                      <TableCell>
+                        {["2023-01-15", "2023-03-22", "2023-05-10", "2023-07-05", "2023-09-18"][i]}
+                      </TableCell>
+                      <TableCell>
+                        <span className={`inline-block px-2 py-1 rounded-full text-xs ${
+                          ["Active", "Completed", "Active", "Pending", "Active"][i] === "Active" 
+                            ? "bg-green-100 text-green-800" 
+                            : ["Active", "Completed", "Active", "Pending", "Active"][i] === "Completed"
+                            ? "bg-blue-100 text-blue-800"
+                            : "bg-yellow-100 text-yellow-800"
+                        }`}>
+                          {["Active", "Completed", "Active", "Pending", "Active"][i]}
+                        </span>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
             </CardContent>
           </Card>
         </TabsContent>
@@ -335,52 +349,55 @@ const ReportingPage: React.FC = () => {
               </div>
             </CardHeader>
             <CardContent>
-              <div className="rounded-md border">
-                <div className="grid grid-cols-12 bg-muted/50 p-3 text-sm font-medium">
-                  <div className="col-span-3">Report Title</div>
-                  <div className="col-span-2">Researcher</div>
-                  <div className="col-span-2">Grant ID</div>
-                  <div className="col-span-2">Submitted</div>
-                  <div className="col-span-2">Status</div>
-                  <div className="col-span-1">Actions</div>
-                </div>
-                {Array.from({ length: 6 }).map((_, i) => (
-                  <div 
-                    key={i}
-                    className="grid grid-cols-12 p-3 text-sm border-t hover:bg-muted/50 transition-colors"
-                  >
-                    <div className="col-span-3 font-medium flex items-center gap-2">
-                      <FileText className="h-4 w-4 text-[#cf2e2e]" />
-                      {["Q1 Progress Report", "Financial Update", "Mid-Year Report", "Project Milestone", "Annual Review", "Final Report"][i]}
-                    </div>
-                    <div className="col-span-2">
-                      {["John Doe", "Jane Smith", "Robert Johnson", "Emma Wilson", "David Lee", "Sarah Thompson"][i]}
-                    </div>
-                    <div className="col-span-2">
-                      AU-2023-{(Math.floor(Math.random() * 900) + 100).toString().padStart(3, '0')}
-                    </div>
-                    <div className="col-span-2">
-                      {Math.floor(Math.random() * 28) + 1} days ago
-                    </div>
-                    <div className="col-span-2">
-                      <span className={`inline-block px-2 py-1 rounded-full text-xs ${
-                        ["Pending Review", "Approved", "Needs Revision", "Pending Review", "Approved", "Pending Review"][i] === "Approved" 
-                          ? "bg-green-100 text-green-800" 
-                          : ["Pending Review", "Approved", "Needs Revision", "Pending Review", "Approved", "Pending Review"][i] === "Pending Review"
-                          ? "bg-yellow-100 text-yellow-800"
-                          : "bg-red-100 text-red-800"
-                      }`}>
-                        {["Pending Review", "Approved", "Needs Revision", "Pending Review", "Approved", "Pending Review"][i]}
-                      </span>
-                    </div>
-                    <div className="col-span-1">
-                      <Button variant="ghost" size="sm">
-                        View
-                      </Button>
-                    </div>
-                  </div>
-                ))}
-              </div>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Report Title</TableHead>
+                    <TableHead>Researcher</TableHead>
+                    <TableHead>Grant ID</TableHead>
+                    <TableHead>Submitted</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {Array.from({ length: 6 }).map((_, i) => (
+                    <TableRow key={i}>
+                      <TableCell className="font-medium">
+                        <div className="flex items-center gap-2">
+                          <FileText className="h-4 w-4 text-[#cf2e2e]" />
+                          {["Q1 Progress Report", "Financial Update", "Mid-Year Report", "Project Milestone", "Annual Review", "Final Report"][i]}
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        {["John Doe", "Jane Smith", "Robert Johnson", "Emma Wilson", "David Lee", "Sarah Thompson"][i]}
+                      </TableCell>
+                      <TableCell>
+                        AU-2023-{(Math.floor(Math.random() * 900) + 100).toString().padStart(3, '0')}
+                      </TableCell>
+                      <TableCell>
+                        {Math.floor(Math.random() * 28) + 1} days ago
+                      </TableCell>
+                      <TableCell>
+                        <span className={`inline-block px-2 py-1 rounded-full text-xs ${
+                          ["Pending Review", "Approved", "Needs Revision", "Pending Review", "Approved", "Pending Review"][i] === "Approved" 
+                            ? "bg-green-100 text-green-800" 
+                            : ["Pending Review", "Approved", "Needs Revision", "Pending Review", "Approved", "Pending Review"][i] === "Pending Review"
+                            ? "bg-yellow-100 text-yellow-800"
+                            : "bg-red-100 text-red-800"
+                        }`}>
+                          {["Pending Review", "Approved", "Needs Revision", "Pending Review", "Approved", "Pending Review"][i]}
+                        </span>
+                      </TableCell>
+                      <TableCell>
+                        <Button variant="ghost" size="sm">
+                          View
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
             </CardContent>
           </Card>
         </TabsContent>

@@ -3,6 +3,14 @@ import React from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
+import { 
+  Table, 
+  TableHeader, 
+  TableRow, 
+  TableHead, 
+  TableBody, 
+  TableCell 
+} from "@/components/ui/table";
 import { BarChart2, Calendar, Download, FileText, Filter, Printer, Save } from "lucide-react";
 
 const SystemReportsPage: React.FC = () => {
@@ -30,7 +38,7 @@ const SystemReportsPage: React.FC = () => {
       </div>
 
       <Tabs defaultValue="overview" className="space-y-6">
-        <TabsList className="grid w-full md:w-auto md:inline-grid grid-cols-2 md:grid-cols-4">
+        <TabsList className="grid w-full md:w-auto md:inline-grid grid-cols-2 md:grid-cols-4 mb-6">
           <TabsTrigger value="overview">System Overview</TabsTrigger>
           <TabsTrigger value="grants">Grant Metrics</TabsTrigger>
           <TabsTrigger value="users">User Analytics</TabsTrigger>
@@ -157,31 +165,37 @@ const SystemReportsPage: React.FC = () => {
                 <div className="h-[300px] bg-[#cf2e2e]/5 rounded-md flex items-center justify-center mb-4">
                   [API Usage Chart Placeholder]
                 </div>
-                <div className="rounded-md border overflow-hidden">
-                  <div className="grid grid-cols-12 bg-muted/50 p-2 text-xs font-medium">
-                    <div className="col-span-5">Endpoint</div>
-                    <div className="col-span-2 text-center">Requests</div>
-                    <div className="col-span-2 text-center">Avg. Time</div>
-                    <div className="col-span-3 text-center">Status</div>
-                  </div>
-                  {[1, 2, 3, 4].map((i) => (
-                    <div key={i} className="grid grid-cols-12 p-2 text-xs border-t">
-                      <div className="col-span-5 font-medium truncate pr-2">
-                        /api/{['users', 'grants', 'reports', 'auth'][i-1]}/{['list', 'create', 'update', 'login'][i-1]}
-                      </div>
-                      <div className="col-span-2 text-center">
-                        {(Math.floor(Math.random() * 900) + 100)}
-                      </div>
-                      <div className="col-span-2 text-center">
-                        {(Math.floor(Math.random() * 900) + 100)}ms
-                      </div>
-                      <div className="col-span-3 text-center">
-                        <span className="inline-block h-2 w-2 rounded-full bg-green-500 mr-1"></span>
-                        Healthy
-                      </div>
-                    </div>
-                  ))}
-                </div>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Endpoint</TableHead>
+                      <TableHead className="text-center">Requests</TableHead>
+                      <TableHead className="text-center">Avg. Time</TableHead>
+                      <TableHead className="text-center">Status</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {[1, 2, 3, 4].map((i) => (
+                      <TableRow key={i}>
+                        <TableCell className="font-medium">
+                          /api/{['users', 'grants', 'reports', 'auth'][i-1]}/{['list', 'create', 'update', 'login'][i-1]}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {(Math.floor(Math.random() * 900) + 100)}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {(Math.floor(Math.random() * 900) + 100)}ms
+                        </TableCell>
+                        <TableCell className="text-center">
+                          <div className="flex items-center justify-center">
+                            <span className="inline-block h-2 w-2 rounded-full bg-green-500 mr-1"></span>
+                            Healthy
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
               </CardContent>
             </Card>
           </div>
@@ -419,56 +433,57 @@ const SystemReportsPage: React.FC = () => {
               </div>
             </CardHeader>
             <CardContent>
-              <div className="rounded-md border">
-                <div className="grid grid-cols-12 bg-muted/50 p-3 text-sm font-medium">
-                  <div className="col-span-2">Timestamp</div>
-                  <div className="col-span-2">User</div>
-                  <div className="col-span-2">IP Address</div>
-                  <div className="col-span-2">Event Type</div>
-                  <div className="col-span-4">Details</div>
-                </div>
-                {Array.from({ length: 10 }).map((_, i) => (
-                  <div 
-                    key={i}
-                    className="grid grid-cols-12 p-3 text-sm border-t hover:bg-muted/50 transition-colors"
-                  >
-                    <div className="col-span-2 text-muted-foreground">
-                      {new Date(Date.now() - (i * 3600000)).toLocaleString()}
-                    </div>
-                    <div className="col-span-2">
-                      {['admin', 'john.doe', 'jane.smith', 'system'][Math.floor(Math.random() * 4)]}
-                    </div>
-                    <div className="col-span-2 font-mono">
-                      192.168.{Math.floor(Math.random() * 255)}.{Math.floor(Math.random() * 255)}
-                    </div>
-                    <div className="col-span-2">
-                      <span className={`inline-block px-2 py-1 rounded-full text-xs ${
-                        ['LOGIN', 'LOGOUT', 'CREATE', 'UPDATE', 'DELETE', 'EXPORT', 'IMPORT', 'ERROR'][i % 8] === 'ERROR' 
-                          ? "bg-red-100 text-red-800" 
-                          : ['LOGIN', 'LOGOUT', 'CREATE', 'UPDATE', 'DELETE', 'EXPORT', 'IMPORT', 'ERROR'][i % 8] === 'CREATE' || ['LOGIN', 'LOGOUT', 'CREATE', 'UPDATE', 'DELETE', 'EXPORT', 'IMPORT', 'ERROR'][i % 8] === 'UPDATE'
-                          ? "bg-green-100 text-green-800"
-                          : ['LOGIN', 'LOGOUT', 'CREATE', 'UPDATE', 'DELETE', 'EXPORT', 'IMPORT', 'ERROR'][i % 8] === 'DELETE'
-                          ? "bg-red-100 text-red-800"
-                          : "bg-blue-100 text-blue-800"
-                      }`}>
-                        {['LOGIN', 'LOGOUT', 'CREATE', 'UPDATE', 'DELETE', 'EXPORT', 'IMPORT', 'ERROR'][i % 8]}
-                      </span>
-                    </div>
-                    <div className="col-span-4 truncate">
-                      {[
-                        'User logged in successfully',
-                        'User logged out',
-                        'Created new grant record',
-                        'Updated user profile',
-                        'Deleted draft report',
-                        'Exported financial report',
-                        'Imported researcher data',
-                        'Failed login attempt'
-                      ][i % 8]}
-                    </div>
-                  </div>
-                ))}
-              </div>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Timestamp</TableHead>
+                    <TableHead>User</TableHead>
+                    <TableHead>IP Address</TableHead>
+                    <TableHead>Event Type</TableHead>
+                    <TableHead>Details</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {Array.from({ length: 10 }).map((_, i) => (
+                    <TableRow key={i}>
+                      <TableCell className="text-muted-foreground">
+                        {new Date(Date.now() - (i * 3600000)).toLocaleString()}
+                      </TableCell>
+                      <TableCell>
+                        {['admin', 'john.doe', 'jane.smith', 'system'][Math.floor(Math.random() * 4)]}
+                      </TableCell>
+                      <TableCell className="font-mono">
+                        192.168.{Math.floor(Math.random() * 255)}.{Math.floor(Math.random() * 255)}
+                      </TableCell>
+                      <TableCell>
+                        <span className={`inline-block px-2 py-1 rounded-full text-xs ${
+                          ['LOGIN', 'LOGOUT', 'CREATE', 'UPDATE', 'DELETE', 'EXPORT', 'IMPORT', 'ERROR'][i % 8] === 'ERROR' 
+                            ? "bg-red-100 text-red-800" 
+                            : ['LOGIN', 'LOGOUT', 'CREATE', 'UPDATE', 'DELETE', 'EXPORT', 'IMPORT', 'ERROR'][i % 8] === 'CREATE' || ['LOGIN', 'LOGOUT', 'CREATE', 'UPDATE', 'DELETE', 'EXPORT', 'IMPORT', 'ERROR'][i % 8] === 'UPDATE'
+                            ? "bg-green-100 text-green-800"
+                            : ['LOGIN', 'LOGOUT', 'CREATE', 'UPDATE', 'DELETE', 'EXPORT', 'IMPORT', 'ERROR'][i % 8] === 'DELETE'
+                            ? "bg-red-100 text-red-800"
+                            : "bg-blue-100 text-blue-800"
+                        }`}>
+                          {['LOGIN', 'LOGOUT', 'CREATE', 'UPDATE', 'DELETE', 'EXPORT', 'IMPORT', 'ERROR'][i % 8]}
+                        </span>
+                      </TableCell>
+                      <TableCell className="max-w-[200px] truncate">
+                        {[
+                          'User logged in successfully',
+                          'User logged out',
+                          'Created new grant record',
+                          'Updated user profile',
+                          'Deleted draft report',
+                          'Exported financial report',
+                          'Imported researcher data',
+                          'Failed login attempt'
+                        ][i % 8]}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
               <div className="flex items-center justify-between mt-4">
                 <div className="text-sm text-muted-foreground">
                   Showing <strong>1-10</strong> of <strong>1,248</strong> log entries
