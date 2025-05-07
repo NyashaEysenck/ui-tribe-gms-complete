@@ -70,18 +70,28 @@ const App = () => (
             {/* Protected Routes - Authentication required */}
             <Route element={<RequireAuth />}>
               {/* Dashboard Routes with Role-Based Access */}
-              <Route path="/dashboard" element={<DashboardRouter />}>
-                <Route path="/researcher" element={<RequireRole allowedRoles={['researcher']} />}>
-                  <Route index element={<ResearcherDashboard />} />
-                </Route>
-                <Route path="/grant-office" element={<RequireRole allowedRoles={['grant_office']} />}>
-                  <Route index element={<GrantOfficeDashboard />} />
-                </Route>
-                <Route path="/admin" element={<RequireRole allowedRoles={['admin']} />}>
-                  <Route index element={<AdminDashboard />} />
-                </Route>
-                <Route index element={<DashboardRedirect />} />
-              </Route>
+              <Route path="/dashboard" element={<DashboardRouter />} />
+              
+              {/* Researcher Dashboard */}
+              <Route path="/dashboard/researcher" element={
+                <RequireRole allowedRoles={['researcher']}>
+                  <ResearcherDashboard />
+                </RequireRole>
+              } />
+              
+              {/* Grant Office Dashboard */}
+              <Route path="/dashboard/grant-office" element={
+                <RequireRole allowedRoles={['grant_office']}>
+                  <GrantOfficeDashboard />
+                </RequireRole>
+              } />
+              
+              {/* Admin Dashboard */}
+              <Route path="/dashboard/admin" element={
+                <RequireRole allowedRoles={['admin']}>
+                  <AdminDashboard />
+                </RequireRole>
+              } />
               
               {/* Common Routes for All Authenticated Users */}
               <Route path="/notifications" element={<NotificationsPage />} />
@@ -128,13 +138,8 @@ const App = () => (
   </QueryClientProvider>
 );
 
-// Simple wrapper component for nested routes
-const DashboardRouter = () => {
-  return <Routes><Route path="*" element={<DashboardRedirect />} /></Routes>;
-};
-
 // Role-based dashboard router 
-const DashboardRedirect = () => {
+const DashboardRouter = () => {
   const { user } = useAuth();
   
   if (!user) {
@@ -145,14 +150,14 @@ const DashboardRedirect = () => {
   
   switch (user.role) {
     case "researcher":
-      return <ResearcherDashboard />;
+      return <Navigate to="/dashboard/researcher" replace />;
     case "grant_office":
-      return <GrantOfficeDashboard />;
+      return <Navigate to="/dashboard/grant-office" replace />;
     case "admin":
-      return <AdminDashboard />;
+      return <Navigate to="/dashboard/admin" replace />;
     default:
       // Fallback to researcher dashboard if role is unknown
-      return <ResearcherDashboard />;
+      return <Navigate to="/dashboard/researcher" replace />;
   }
 };
 
