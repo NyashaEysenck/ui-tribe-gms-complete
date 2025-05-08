@@ -4,29 +4,13 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "@/contexts/auth/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { GrantOpportunity } from "@/types/grants";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import {
-  ArrowLeft,
-  Calendar,
-  Edit,
-  ExternalLink,
-  Loader2,
-  Users,
-  Building,
-  Info,
-} from "lucide-react";
 import { toast } from "sonner";
-import { format } from "date-fns";
 import { validateGrantCategory, validateFundingSource } from "@/utils/typeUtils";
+import { OpportunityHeader } from "./opportunities/OpportunityHeader";
+import { OpportunityDescription } from "./opportunities/OpportunityDescription";
+import { OpportunitySidebar } from "./opportunities/OpportunitySidebar";
+import { OpportunityLoading } from "./opportunities/OpportunityLoading";
+import { OpportunityError } from "./opportunities/OpportunityError";
 
 const OpportunityDetailsPage: React.FC = () => {
   const { opportunityId } = useParams<{ opportunityId: string }>();
@@ -108,154 +92,40 @@ const OpportunityDetailsPage: React.FC = () => {
   };
 
   if (loading) {
-    return (
-      <div className="p-6">
-        <div className="text-center py-12">
-          <Loader2 className="h-12 w-12 animate-spin mx-auto mb-4 text-primary" />
-          <p className="text-muted-foreground">Loading opportunity details...</p>
-        </div>
-      </div>
-    );
+    return <OpportunityLoading />;
   }
 
   if (error || !opportunity) {
-    return (
-      <div className="p-6">
-        <Card>
-          <CardContent className="pt-6">
-            <div className="text-center py-8">
-              <h2 className="text-2xl font-bold text-destructive mb-2">Error</h2>
-              <p className="text-muted-foreground mb-4">{error || "Opportunity not found"}</p>
-              <Button onClick={handleBackToList}>
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                Back to Opportunities
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    );
+    return <OpportunityError error={error} onBack={handleBackToList} />;
   }
-
-  const deadlineDate = new Date(opportunity.deadline);
-  const isDeadlinePassed = deadlineDate < new Date();
   
   return (
     <div className="container mx-auto p-6">
-      <div className="mb-6">
-        <Button variant="outline" onClick={handleBackToList} className="mb-4">
-          <ArrowLeft className="mr-2 h-4 w-4" />
-          Back to Opportunities
-        </Button>
-        
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          <div>
-            <h1 className="text-2xl font-bold">{opportunity.title}</h1>
-            <div className="flex items-center mt-1">
-              <Calendar className="h-4 w-4 mr-2 text-muted-foreground" />
-              <span className={`text-sm ${isDeadlinePassed ? 'text-destructive' : 'text-muted-foreground'}`}>
-                {isDeadlinePassed 
-                  ? `Deadline Passed: ${format(deadlineDate, "PPP")}` 
-                  : `Deadline: ${format(deadlineDate, "PPP")}`}
-              </span>
-            </div>
-          </div>
-          
-          {isGrantOfficeUser && (
-            <Button onClick={handleEditOpportunity}>
-              <Edit className="mr-2 h-4 w-4" />
-              Edit Opportunity
-            </Button>
-          )}
-        </div>
-      </div>
+      <OpportunityHeader 
+        opportunity={opportunity}
+        isGrantOfficeUser={isGrantOfficeUser}
+        onBack={handleBackToList}
+        onEdit={handleEditOpportunity}
+      />
       
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="md:col-span-2">
-          <Card>
-            <CardHeader>
-              <CardTitle>Description</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="whitespace-pre-line">{opportunity.description}</p>
-            </CardContent>
-          </Card>
-          
-          <Card className="mt-6">
-            <CardHeader>
-              <CardTitle>Eligibility Criteria</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="whitespace-pre-line">{opportunity.eligibility}</p>
-            </CardContent>
-          </Card>
+          <OpportunityDescription 
+            description={opportunity.description}
+            eligibility={opportunity.eligibility}
+          />
         </div>
         
         <div>
-          <Card>
-            <CardHeader>
-              <CardTitle>Opportunity Details</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <h3 className="text-sm font-medium mb-1 flex items-center">
-                  <Info className="h-4 w-4 mr-2" />
-                  Funding Amount
-                </h3>
-                <p className="text-2xl font-bold">${opportunity.fundingAmount.toLocaleString()}</p>
-              </div>
-              
-              <div>
-                <h3 className="text-sm font-medium mb-1 flex items-center">
-                  <Building className="h-4 w-4 mr-2" />
-                  Funding Source
-                </h3>
-                <Badge variant={opportunity.fundingSource === "internal" ? "default" : "outline"}>
-                  {opportunity.fundingSource === "internal" ? "Internal (University)" : "External"}
-                </Badge>
-              </div>
-              
-              <div>
-                <h3 className="text-sm font-medium mb-1 flex items-center">
-                  <Users className="h-4 w-4 mr-2" />
-                  Category
-                </h3>
-                <Badge variant="secondary">
-                  {opportunity.category.charAt(0).toUpperCase() + opportunity.category.slice(1)}
-                </Badge>
-              </div>
-              
-              {opportunity.postedDate && (
-                <div>
-                  <h3 className="text-sm font-medium mb-1 flex items-center">
-                    <Calendar className="h-4 w-4 mr-2" />
-                    Posted Date
-                  </h3>
-                  <p>{format(new Date(opportunity.postedDate), "PPP")}</p>
-                </div>
-              )}
-            </CardContent>
-            <CardFooter>
-              {!isDeadlinePassed && (
-                opportunity.applicationUrl ? (
-                  <Button className="w-full" onClick={handleApply}>
-                    <ExternalLink className="mr-2 h-4 w-4" />
-                    Apply External
-                  </Button>
-                ) : (
-                  <Button className="w-full" onClick={handleApply}>
-                    Apply Now
-                  </Button>
-                )
-              )}
-              
-              {isDeadlinePassed && (
-                <p className="text-destructive text-center w-full">
-                  Application deadline has passed
-                </p>
-              )}
-            </CardFooter>
-          </Card>
+          <OpportunitySidebar 
+            fundingAmount={opportunity.fundingAmount}
+            fundingSource={opportunity.fundingSource}
+            category={opportunity.category}
+            postedDate={opportunity.postedDate}
+            deadline={opportunity.deadline}
+            applicationUrl={opportunity.applicationUrl}
+            onApply={handleApply}
+          />
         </div>
       </div>
     </div>
