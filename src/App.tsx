@@ -28,6 +28,7 @@ import MyGrants from "@/components/grants/MyGrants";
 import GrantApplicationForm from "@/components/grants/GrantApplicationForm";
 import CreateOpportunityForm from "@/components/grants/CreateOpportunityForm";
 import GrantReviewForm from "@/components/grants/GrantReviewForm";
+import OpportunityDetailsPage from "@/components/grants/OpportunityDetailsPage";
 import NotFound from "@/components/NotFound";
 
 // New pages
@@ -135,7 +136,7 @@ const App = () => (
                 <Route path="/create-opportunity" element={<CreateOpportunityForm />} />
                 <Route path="/grant-review/:grantId" element={<GrantReviewForm />} />
                 <Route path="/edit-opportunity/:opportunityId" element={<CreateOpportunityForm />} />
-                <Route path="/opportunities/:opportunityId" element={<OpportunitiesList />} />
+                <Route path="/opportunity-details/:opportunityId" element={<OpportunityDetailsPage />} />
                 <Route path="/ip-management" element={<IntellectualPropertyPage />} />
                 <Route path="/agreements" element={<AgreementsPage />} />
               </Route>

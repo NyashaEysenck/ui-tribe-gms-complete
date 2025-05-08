@@ -1,14 +1,13 @@
 
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/auth/useAuth";
-import { Notification } from "@/types/grants";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, Loader2 } from "lucide-react";
 import { format } from "date-fns";
 
 import { cn } from "@/lib/utils";
@@ -37,6 +36,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { GrantOpportunity } from "@/types/grants";
 
 const formSchema = z.object({
   title: z.string().min(5, { message: "Title must be at least 5 characters" }),
@@ -74,6 +74,9 @@ const sendNewOpportunityNotification = async (opportunityId: string, opportunity
 const CreateOpportunityForm = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { opportunityId } = useParams();
+  const isEditMode = !!opportunityId;
+  const [isLoading, setIsLoading] = useState(false);
   
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -88,47 +91,120 @@ const CreateOpportunityForm = () => {
     },
   });
 
+  // Fetch opportunity data if in edit mode
+  useEffect(() => {
+    const fetchOpportunityData = async () => {
+      if (isEditMode && opportunityId) {
+        setIsLoading(true);
+        try {
+          const { data, error } = await supabase
+            .from("grant_opportunities")
+            .select("*")
+            .eq("id", opportunityId)
+            .single();
+          
+          if (error) throw error;
+          
+          if (data) {
+            // Transform data for the form
+            form.reset({
+              title: data.title || "",
+              description: data.description || "",
+              fundingAmount: data.funding_amount,
+              deadline: data.deadline ? new Date(data.deadline) : new Date(),
+              eligibility: data.eligibility || "",
+              category: data.category || "",
+              fundingSource: data.funding_source as "internal" | "external",
+              applicationUrl: data.application_url || "",
+            });
+          }
+        } catch (error: any) {
+          console.error("Error fetching opportunity data:", error);
+          toast.error("Failed to load opportunity data: " + error.message);
+          // Redirect back to proposals page if opportunity not found
+          navigate("/proposals");
+        } finally {
+          setIsLoading(false);
+        }
+      }
+    };
+    
+    fetchOpportunityData();
+  }, [opportunityId, isEditMode, form, navigate]);
+
   const onSubmit = async (data: FormValues) => {
+    if (!user) return;
+    
     try {
-      // Insert the new opportunity into Supabase
-      const { data: opportunity, error } = await supabase
-        .from("grant_opportunities")
-        .insert({
-          title: data.title,
-          description: data.description,
-          funding_amount: data.fundingAmount,
-          deadline: data.deadline.toISOString(),
-          eligibility: data.eligibility,
-          category: data.category,
-          funding_source: data.fundingSource,
-          application_url: data.applicationUrl || null,
-          posted_by: user?.id,
-        })
-        .select()
-        .single();
-
-      if (error) throw error;
-
-      // Send notification about the new opportunity
-      if (opportunity) {
-        await sendNewOpportunityNotification(opportunity.id, opportunity.title);
+      const formData = {
+        title: data.title,
+        description: data.description,
+        funding_amount: data.fundingAmount,
+        deadline: data.deadline.toISOString(),
+        eligibility: data.eligibility,
+        category: data.category,
+        funding_source: data.fundingSource,
+        application_url: data.applicationUrl || null,
+      };
+      
+      let response;
+      
+      if (isEditMode && opportunityId) {
+        // Update existing opportunity
+        response = await supabase
+          .from("grant_opportunities")
+          .update(formData)
+          .eq("id", opportunityId)
+          .select();
+        
+        if (response.error) throw response.error;
+        toast.success("Opportunity updated successfully!");
+      } else {
+        // Create new opportunity
+        response = await supabase
+          .from("grant_opportunities")
+          .insert({
+            ...formData,
+            posted_by: user.id,
+          })
+          .select()
+          .single();
+        
+        if (response.error) throw response.error;
+        
+        // Send notification about the new opportunity
+        if (response.data) {
+          await sendNewOpportunityNotification(response.data.id, response.data.title);
+        }
+        
+        toast.success("Opportunity created successfully!");
       }
 
-      toast.success("Opportunity created successfully!");
       navigate("/proposals");
-    } catch (error) {
-      console.error("Error creating opportunity:", error);
-      toast.error("Failed to create opportunity. Please try again.");
+    } catch (error: any) {
+      console.error("Error saving opportunity:", error);
+      toast.error(`Failed to ${isEditMode ? 'update' : 'create'} opportunity: ${error.message}`);
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="container mx-auto p-6">
+        <div className="flex items-center justify-center py-12">
+          <Loader2 className="h-8 w-8 animate-spin text-primary mr-2" />
+          <p>Loading opportunity data...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto p-6">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold">Create New Opportunity</h1>
+          <h1 className="text-2xl font-bold">{isEditMode ? "Edit" : "Create New"} Opportunity</h1>
           <p className="text-muted-foreground">
-            Create a new funding opportunity for researchers
+            {isEditMode ? "Update" : "Create a new"} funding opportunity for researchers
           </p>
         </div>
       </div>
@@ -326,7 +402,9 @@ const CreateOpportunityForm = () => {
                   Cancel
                 </Button>
                 <Button type="submit" disabled={form.formState.isSubmitting}>
-                  {form.formState.isSubmitting ? "Creating..." : "Create Opportunity"}
+                  {form.formState.isSubmitting ? 
+                    (isEditMode ? "Updating..." : "Creating...") : 
+                    (isEditMode ? "Update Opportunity" : "Create Opportunity")}
                 </Button>
               </div>
             </form>

@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -42,7 +41,13 @@ const ProposalsPage: React.FC = () => {
   const { opportunities, loading, fetchOpportunities } = useGrantsData();
   const [searchQuery, setSearchQuery] = useState("");
   const [isDeleting, setIsDeleting] = useState<string | null>(null); // Track which opportunity is being deleted
+  const [localOpportunities, setLocalOpportunities] = useState(opportunities);
   const navigate = useNavigate();
+
+  // Update local opportunities when the fetched opportunities change
+  useEffect(() => {
+    setLocalOpportunities(opportunities);
+  }, [opportunities]);
 
   // Load opportunities when component mounts
   useEffect(() => {
@@ -64,7 +69,12 @@ const ProposalsPage: React.FC = () => {
       
       if (error) throw new Error(error.message);
       
-      // Refresh the opportunities list
+      // Update local state immediately for better UX
+      setLocalOpportunities(prevOpportunities => 
+        prevOpportunities.filter(opp => opp.id !== id)
+      );
+      
+      // Also refresh the opportunities list from the server
       await fetchOpportunities();
       
       toast.success("Grant opportunity deleted successfully");
@@ -78,17 +88,17 @@ const ProposalsPage: React.FC = () => {
 
   const handleEditOpportunity = (opportunityId: string) => {
     console.log(`Navigating to edit opportunity: ${opportunityId}`);
-    // Correctly navigate to the edit page for this specific opportunity
+    // Navigate to the create/edit form with the ID parameter
     navigate(`/edit-opportunity/${opportunityId}`);
   };
 
   const handleViewOpportunity = (opportunityId: string) => {
     console.log(`Navigating to view opportunity details: ${opportunityId}`);
-    // Navigate to the specific opportunity details page, not the general opportunities list
+    // Navigate to the opportunity details page
     navigate(`/opportunity-details/${opportunityId}`);
   };
 
-  const filteredOpportunities = opportunities.filter(opportunity => 
+  const filteredOpportunities = localOpportunities.filter(opportunity => 
     opportunity.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
     opportunity.description.toLowerCase().includes(searchQuery.toLowerCase())
   );
