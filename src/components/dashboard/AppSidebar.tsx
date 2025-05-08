@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -8,6 +7,8 @@ import {
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
+  SidebarProvider,
+  SidebarRail,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -195,68 +196,75 @@ export const AppSidebar: React.FC = () => {
   }) || [];
 
   return (
-    <Sidebar className="h-screen border-r">
-      <SidebarHeader className="border-b py-3 px-4 flex justify-between items-center bg-[#cf2e2e] text-white">
-        <div className="flex items-center gap-2">
-          <img 
-            src="/lovable-uploads/4af217f9-8ca2-4acc-8ba4-9320b16cf567.png" 
-            alt="Africa University" 
-            className="h-16 w-auto" 
-          />
-          <span className="text-lg font-semibold">AU GMS</span>
-        </div>
-        <div className="flex items-center">
-          <NotificationCenter />
-          <SidebarTrigger />
-        </div>
-      </SidebarHeader>
-
-      <SidebarContent className="p-4">
-        <div className="flex flex-col space-y-1">
-          {menuItems.map((item) => (
-            <Link
-              key={item.path}
-              to={item.path}
-              className={cn(
-                "flex items-center px-4 py-2 text-sm rounded-md transition-colors group",
-                isActiveRoute(item.path)
-                  ? "bg-[#cf2e2e]/10 text-[#cf2e2e] font-medium"
-                  : "text-au-neutral-600 hover:bg-au-neutral-100"
-              )}
-            >
-              <div className="flex items-center">
-                {React.cloneElement(item.icon, { 
-                  className: "h-5 w-5 mr-2 group-data-[collapsible=icon]:mx-auto" 
-                })}
-                <span className="group-data-[collapsible=icon]:hidden">{item.name}</span>
-              </div>
-            </Link>
-          ))}
-        </div>
-      </SidebarContent>
-
-      <SidebarFooter className="border-t p-4">
-        <div className="flex items-center mb-4 space-x-3">
-          <Avatar>
-            <AvatarImage src={user.profileImage} />
-            <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
-          </Avatar>
-          <div>
-            <p className="text-sm font-medium">{user.name}</p>
-            <p className="text-xs text-muted-foreground capitalize">
-              {getFormattedRole()}
-            </p>
+    <SidebarProvider defaultOpen={true}>
+      <Sidebar className="h-screen border-r" collapsible="icon">
+        <SidebarHeader className="border-b py-3 px-4 flex justify-between items-center bg-[#cf2e2e] text-white">
+          <div className="flex items-center gap-2">
+            <img 
+              src="/lovable-uploads/4af217f9-8ca2-4acc-8ba4-9320b16cf567.png" 
+              alt="Africa University" 
+              className="h-16 w-auto" 
+            />
+            <span className="text-lg font-semibold group-data-[collapsible=icon]:hidden">AU GMS</span>
           </div>
-        </div>
-        <Button
-          variant="outline"
-          className="w-full flex items-center justify-center"
-          onClick={logout}
-        >
-          <LogOut className="h-4 w-4 mr-2" />
-          Sign out
-        </Button>
-      </SidebarFooter>
-    </Sidebar>
+          <div className="flex items-center">
+            <NotificationCenter />
+          </div>
+        </SidebarHeader>
+
+        <SidebarContent className="p-4">
+          <div className="flex flex-col space-y-1">
+            {menuItems.map((item) => (
+              <Link
+                key={item.path}
+                to={item.path}
+                className={cn(
+                  "flex items-center px-4 py-2 text-sm rounded-md transition-colors group",
+                  isActiveRoute(item.path)
+                    ? "bg-[#cf2e2e]/10 text-[#cf2e2e] font-medium"
+                    : "text-au-neutral-600 hover:bg-au-neutral-100"
+                )}
+              >
+                <div className="flex items-center">
+                  {React.cloneElement(item.icon, { 
+                    className: cn(
+                      "h-5 w-5",
+                      !isActiveRoute(item.path) && "group-data-[collapsible=icon]:mx-auto"
+                    )
+                  })}
+                  <span className="ml-2 group-data-[collapsible=icon]:hidden">{item.name}</span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </SidebarContent>
+
+        <SidebarFooter className="border-t p-4">
+          <div className="flex items-center mb-4 space-x-3">
+            <Avatar>
+              <AvatarImage src={user.profileImage} />
+              <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
+            </Avatar>
+            <div className="group-data-[collapsible=icon]:hidden">
+              <p className="text-sm font-medium">{user.name}</p>
+              <p className="text-xs text-muted-foreground capitalize">
+                {getFormattedRole()}
+              </p>
+            </div>
+          </div>
+          <Button
+            variant="outline"
+            className="w-full flex items-center justify-center"
+            onClick={logout}
+          >
+            <LogOut className="h-4 w-4" />
+            <span className="ml-2 group-data-[collapsible=icon]:hidden">Sign out</span>
+          </Button>
+        </SidebarFooter>
+        
+        <SidebarTrigger className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 rounded-full border bg-background shadow-md" />
+        <SidebarRail />
+      </Sidebar>
+    </SidebarProvider>
   );
 };
