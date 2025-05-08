@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { 
@@ -41,8 +41,13 @@ const ProposalsPage: React.FC = () => {
   const { user } = useAuth();
   const { opportunities, loading, fetchOpportunities } = useGrantsData();
   const [searchQuery, setSearchQuery] = useState("");
-  const [isDeleting, setIsDeleting] = useState(false);
+  const [isDeleting, setIsDeleting] = useState<string | null>(null); // Track which opportunity is being deleted
   const navigate = useNavigate();
+
+  // Load opportunities when component mounts
+  useEffect(() => {
+    fetchOpportunities();
+  }, [fetchOpportunities]);
 
   const handleCreateOpportunity = () => {
     navigate("/create-opportunity");
@@ -50,7 +55,7 @@ const ProposalsPage: React.FC = () => {
 
   const handleDeleteOpportunity = async (id: string) => {
     try {
-      setIsDeleting(true);
+      setIsDeleting(id); // Set the ID of the opportunity being deleted
       // Delete the opportunity from the database
       const { error } = await supabase
         .from('grant_opportunities')
@@ -67,18 +72,20 @@ const ProposalsPage: React.FC = () => {
       console.error("Error deleting opportunity:", error);
       toast.error("Failed to delete opportunity: " + error.message);
     } finally {
-      setIsDeleting(false);
+      setIsDeleting(null); // Reset deleting state
     }
   };
 
   const handleEditOpportunity = (opportunityId: string) => {
     console.log(`Navigating to edit opportunity: ${opportunityId}`);
+    // Correctly navigate to the edit page for this specific opportunity
     navigate(`/edit-opportunity/${opportunityId}`);
   };
 
   const handleViewOpportunity = (opportunityId: string) => {
-    console.log(`Navigating to view opportunity: ${opportunityId}`);
-    navigate(`/opportunities/${opportunityId}`);
+    console.log(`Navigating to view opportunity details: ${opportunityId}`);
+    // Navigate to the specific opportunity details page, not the general opportunities list
+    navigate(`/opportunity-details/${opportunityId}`);
   };
 
   const filteredOpportunities = opportunities.filter(opportunity => 
@@ -172,12 +179,11 @@ const ProposalsPage: React.FC = () => {
                           <AlertDialogAction 
                             className="bg-destructive hover:bg-destructive/90" 
                             onClick={() => handleDeleteOpportunity(opportunity.id)}
-                            disabled={isDeleting}
+                            disabled={isDeleting === opportunity.id}
                           >
-                            {isDeleting ? 
-                              <Loader2 className="h-4 w-4 animate-spin mr-2" /> : 
-                              null
-                            }
+                            {isDeleting === opportunity.id ? (
+                              <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                            ) : null}
                             Delete
                           </AlertDialogAction>
                         </AlertDialogFooter>

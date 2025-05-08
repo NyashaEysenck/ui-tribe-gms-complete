@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/auth/useAuth";
@@ -60,6 +61,7 @@ export function useGrantsData() {
   // Use useCallback for fetchOpportunities as well
   const fetchOpportunities = useCallback(async () => {
     try {
+      setLoading(true);
       const { data, error } = await supabase
         .from('grant_opportunities')
         .select('*')
@@ -86,6 +88,8 @@ export function useGrantsData() {
     } catch (error: any) {
       console.error("Error fetching grant opportunities:", error);
       toast.error("Failed to load grant opportunities: " + error.message);
+    } finally {
+      setLoading(false);
     }
   }, []); // Empty dependency array since it doesn't depend on any props or state
   
