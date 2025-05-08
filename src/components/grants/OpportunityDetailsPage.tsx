@@ -26,6 +26,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
+import { validateGrantCategory, validateFundingSource } from "@/utils/typeUtils";
 
 const OpportunityDetailsPage: React.FC = () => {
   const { opportunityId } = useParams<{ opportunityId: string }>();
@@ -57,6 +58,7 @@ const OpportunityDetailsPage: React.FC = () => {
         
         if (data) {
           // Transform the data to match our GrantOpportunity type
+          // Use validation utility functions for enum types
           const opportunityData: GrantOpportunity = {
             id: data.id,
             title: data.title,
@@ -64,8 +66,8 @@ const OpportunityDetailsPage: React.FC = () => {
             fundingAmount: data.funding_amount,
             deadline: data.deadline,
             eligibility: data.eligibility,
-            category: data.category,
-            fundingSource: data.funding_source,
+            category: validateGrantCategory(data.category),
+            fundingSource: validateFundingSource(data.funding_source),
             applicationUrl: data.application_url || "",
             postedBy: data.posted_by,
             postedDate: data.posted_date,
