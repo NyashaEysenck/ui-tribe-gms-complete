@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -40,6 +41,7 @@ const ProposalsPage: React.FC = () => {
   const { user } = useAuth();
   const { opportunities, loading, fetchOpportunities } = useGrantsData();
   const [searchQuery, setSearchQuery] = useState("");
+  const [isDeleting, setIsDeleting] = useState(false);
   const navigate = useNavigate();
 
   const handleCreateOpportunity = () => {
@@ -48,6 +50,7 @@ const ProposalsPage: React.FC = () => {
 
   const handleDeleteOpportunity = async (id: string) => {
     try {
+      setIsDeleting(true);
       // Delete the opportunity from the database
       const { error } = await supabase
         .from('grant_opportunities')
@@ -63,14 +66,18 @@ const ProposalsPage: React.FC = () => {
     } catch (error: any) {
       console.error("Error deleting opportunity:", error);
       toast.error("Failed to delete opportunity: " + error.message);
+    } finally {
+      setIsDeleting(false);
     }
   };
 
   const handleEditOpportunity = (opportunityId: string) => {
+    console.log(`Navigating to edit opportunity: ${opportunityId}`);
     navigate(`/edit-opportunity/${opportunityId}`);
   };
 
   const handleViewOpportunity = (opportunityId: string) => {
+    console.log(`Navigating to view opportunity: ${opportunityId}`);
     navigate(`/opportunities/${opportunityId}`);
   };
 
@@ -165,7 +172,12 @@ const ProposalsPage: React.FC = () => {
                           <AlertDialogAction 
                             className="bg-destructive hover:bg-destructive/90" 
                             onClick={() => handleDeleteOpportunity(opportunity.id)}
+                            disabled={isDeleting}
                           >
+                            {isDeleting ? 
+                              <Loader2 className="h-4 w-4 animate-spin mr-2" /> : 
+                              null
+                            }
                             Delete
                           </AlertDialogAction>
                         </AlertDialogFooter>
