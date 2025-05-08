@@ -74,7 +74,7 @@ const AdminRoute = () => (
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <BrowserRouter>
+    <BrowserRouter basename="/ui-tribe-gms-complete">
       <AuthProvider>
         <TooltipProvider>
           <Toaster />
