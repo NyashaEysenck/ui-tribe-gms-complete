@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -35,10 +34,11 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { supabase } from "@/integrations/supabase/client";
 
 const ProposalsPage: React.FC = () => {
   const { user } = useAuth();
-  const { opportunities, loading, createGrantOpportunity, fetchOpportunities } = useGrantsData();
+  const { opportunities, loading, fetchOpportunities } = useGrantsData();
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
 
@@ -48,10 +48,11 @@ const ProposalsPage: React.FC = () => {
 
   const handleDeleteOpportunity = async (id: string) => {
     try {
-      // Call the deleteOpportunity method from the useGrantsData hook
-      const { data, error } = await fetch(`/api/opportunities/${id}`, {
-        method: "DELETE",
-      }).then(res => res.json());
+      // Delete the opportunity from the database
+      const { error } = await supabase
+        .from('grant_opportunities')
+        .delete()
+        .eq('id', id);
       
       if (error) throw new Error(error.message);
       
@@ -61,7 +62,7 @@ const ProposalsPage: React.FC = () => {
       toast.success("Grant opportunity deleted successfully");
     } catch (error: any) {
       console.error("Error deleting opportunity:", error);
-      toast.error("Failed to delete opportunity");
+      toast.error("Failed to delete opportunity: " + error.message);
     }
   };
 

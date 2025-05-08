@@ -2,7 +2,7 @@
 import React, { Suspense } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { SidebarProvider } from "@/components/ui/sidebar";
+import { SidebarProvider, SidebarRail } from "@/components/ui/sidebar";
 import { AppSidebar } from "./AppSidebar";
 
 interface DashboardLayoutProps {
@@ -36,6 +36,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
       <SidebarProvider>
         <div className="min-h-screen flex w-full">
           <AppSidebar />
+          <SidebarRail /> {/* Add SidebarRail to allow bringing back the sidebar */}
           <div className="flex-1 overflow-auto">
             {children}
           </div>
