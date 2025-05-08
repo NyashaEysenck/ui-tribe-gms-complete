@@ -25,7 +25,8 @@ import {
   Search,
   Award,
   FileSignature,
-  BookOpen
+  BookOpen,
+  ChevronRight
 } from "lucide-react";
 import NotificationCenter from "./notifications/NotificationCenter";
 import { useRoleBasedAccess } from "@/hooks/useRoleBasedAccess";

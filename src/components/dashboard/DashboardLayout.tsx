@@ -36,10 +36,10 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
       <SidebarProvider>
         <div className="min-h-screen flex w-full">
           <AppSidebar />
-          <SidebarRail /> {/* Add SidebarRail to allow bringing back the sidebar */}
-          <div className="flex-1 overflow-auto">
+          <main className="flex-1 overflow-auto relative">
+            <SidebarRail className="z-30" />
             {children}
-          </div>
+          </main>
         </div>
       </SidebarProvider>
     );
