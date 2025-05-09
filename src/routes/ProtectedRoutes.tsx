@@ -65,5 +65,6 @@ export const RequireRole = ({
   }
 
   console.log("RequireRole - Access granted for role:", user.role);
+  console.log("RequireRole - Children being rendered:", !!children);
   return <>{children}</>;
 };

@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate, Outlet } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import React from "react";
+import { SidebarProvider } from "@/components/ui/sidebar";
 
 // New role-based routing components
 import { RequireAuth, RequireRole } from "./routes/ProtectedRoutes";
@@ -80,71 +81,73 @@ const App = () => {
       {/* Changed to use / for development environment */}
       <BrowserRouter basename="/">
         <AuthProvider>
-          <TooltipProvider>
-            <Toaster />
-            <Sonner />
-            <Routes>
-              {/* Public Routes */}
-              <Route path="/" element={<LandingPage />} />
-              <Route path="/login" element={<LoginForm />} />
-              <Route path="/register" element={<RegisterForm />} />
-              <Route path="/forgot-password" element={<ForgotPasswordForm />} />
-              <Route path="/setup" element={<SetupPage />} />
-              
-              {/* Protected Routes - Authentication required */}
-              <Route element={<RequireAuth />}>
-                {/* Dashboard Routes with Role-Based Access */}
-                <Route path="/dashboard" element={<DashboardRouter />} />
+          <SidebarProvider defaultOpen={true}>
+            <TooltipProvider>
+              <Toaster />
+              <Sonner />
+              <Routes>
+                {/* Public Routes */}
+                <Route path="/" element={<LandingPage />} />
+                <Route path="/login" element={<LoginForm />} />
+                <Route path="/register" element={<RegisterForm />} />
+                <Route path="/forgot-password" element={<ForgotPasswordForm />} />
+                <Route path="/setup" element={<SetupPage />} />
                 
-                {/* Researcher Dashboard */}
-                <Route path="/dashboard/researcher" element={<ResearcherDashboard />} />
-                
-                {/* Grant Office Dashboard */}
-                <Route path="/dashboard/grant-office" element={<GrantOfficeDashboard />} />
-                
-                {/* Admin Dashboard */}
-                <Route path="/dashboard/admin" element={<AdminDashboard />} />
-                
-                {/* Common Routes for All Authenticated Users */}
-                <Route path="/notifications" element={<NotificationsPage />} />
-                <Route path="/settings" element={<SettingsPage />} />
-                
-                {/* Researcher Routes - Using the wrapper component */}
-                <Route element={<ResearcherRoute />}>
-                  <Route path="/my-grants" element={<MyGrants />} />
-                  <Route path="/opportunities" element={<OpportunitiesList />} />
-                  <Route path="/reports" element={<ReportsPage />} />
-                  <Route path="/calendar" element={<CalendarPage />} />
-                  <Route path="/grant-application" element={<GrantApplicationForm />} />
-                  <Route path="/new-application" element={<GrantApplicationForm />} />
+                {/* Protected Routes - Authentication required */}
+                <Route element={<RequireAuth />}>
+                  {/* Dashboard Routes with Role-Based Access */}
+                  <Route path="/dashboard" element={<DashboardRouter />} />
+                  
+                  {/* Researcher Dashboard */}
+                  <Route path="/dashboard/researcher" element={<ResearcherDashboard />} />
+                  
+                  {/* Grant Office Dashboard */}
+                  <Route path="/dashboard/grant-office" element={<GrantOfficeDashboard />} />
+                  
+                  {/* Admin Dashboard */}
+                  <Route path="/dashboard/admin" element={<AdminDashboard />} />
+                  
+                  {/* Common Routes for All Authenticated Users */}
+                  <Route path="/notifications" element={<NotificationsPage />} />
+                  <Route path="/settings" element={<SettingsPage />} />
+                  
+                  {/* Researcher Routes - Using the wrapper component */}
+                  <Route element={<ResearcherRoute />}>
+                    <Route path="/my-grants" element={<MyGrants />} />
+                    <Route path="/opportunities" element={<OpportunitiesList />} />
+                    <Route path="/reports" element={<ReportsPage />} />
+                    <Route path="/calendar" element={<CalendarPage />} />
+                    <Route path="/grant-application" element={<GrantApplicationForm />} />
+                    <Route path="/new-application" element={<GrantApplicationForm />} />
+                  </Route>
+                  
+                  {/* Grant Office Routes - Using the wrapper component */}
+                  <Route element={<GrantOfficeRoute />}>
+                    <Route path="/reporting" element={<ReportingPage />} />
+                    <Route path="/proposals" element={<ProposalsPage />} />
+                    <Route path="/finance" element={<FinancePage />} />
+                    <Route path="/applications" element={<ApplicationsPage />} />
+                    <Route path="/create-opportunity" element={<CreateOpportunityForm />} />
+                    <Route path="/grant-review/:grantId" element={<GrantReviewForm />} />
+                    <Route path="/edit-opportunity/:opportunityId" element={<CreateOpportunityForm />} />
+                    <Route path="/opportunity-details/:opportunityId" element={<OpportunityDetailsPage />} />
+                    <Route path="/ip-management" element={<IntellectualPropertyPage />} />
+                    <Route path="/agreements" element={<AgreementsPage />} />
+                  </Route>
+                  
+                  {/* Admin Only Routes - Using the wrapper component */}
+                  <Route element={<AdminRoute />}>
+                    <Route path="/admin-settings" element={<AdminSettingsPage />} />
+                    <Route path="/users" element={<UserManagementPage />} />
+                    <Route path="/system-reports" element={<SystemReportsPage />} />
+                  </Route>
                 </Route>
                 
-                {/* Grant Office Routes - Using the wrapper component */}
-                <Route element={<GrantOfficeRoute />}>
-                  <Route path="/reporting" element={<ReportingPage />} />
-                  <Route path="/proposals" element={<ProposalsPage />} />
-                  <Route path="/finance" element={<FinancePage />} />
-                  <Route path="/applications" element={<ApplicationsPage />} />
-                  <Route path="/create-opportunity" element={<CreateOpportunityForm />} />
-                  <Route path="/grant-review/:grantId" element={<GrantReviewForm />} />
-                  <Route path="/edit-opportunity/:opportunityId" element={<CreateOpportunityForm />} />
-                  <Route path="/opportunity-details/:opportunityId" element={<OpportunityDetailsPage />} />
-                  <Route path="/ip-management" element={<IntellectualPropertyPage />} />
-                  <Route path="/agreements" element={<AgreementsPage />} />
-                </Route>
-                
-                {/* Admin Only Routes - Using the wrapper component */}
-                <Route element={<AdminRoute />}>
-                  <Route path="/admin-settings" element={<AdminSettingsPage />} />
-                  <Route path="/users" element={<UserManagementPage />} />
-                  <Route path="/system-reports" element={<SystemReportsPage />} />
-                </Route>
-              </Route>
-              
-              {/* Catch-all 404 Route */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </TooltipProvider>
+                {/* Catch-all 404 Route */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </TooltipProvider>
+          </SidebarProvider>
         </AuthProvider>
       </BrowserRouter>
     </QueryClientProvider>

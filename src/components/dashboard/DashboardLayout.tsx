@@ -1,8 +1,8 @@
 
 import React from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { SidebarProvider, SidebarRail } from "@/components/ui/sidebar";
+import { SidebarRail } from "@/components/ui/sidebar";
 import { AppSidebar } from "./AppSidebar";
 
 interface DashboardLayoutProps {
@@ -10,12 +10,11 @@ interface DashboardLayoutProps {
 }
 
 const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
-  const navigate = useNavigate();
-  
   try {
     const { user, isAuthenticated, isLoading } = useAuth();
     
     console.log("DashboardLayout auth state:", { isAuthenticated, isLoading });
+    console.log("DashboardLayout children:", !!children);
 
     // If auth is still loading, show nothing or a loader
     if (isLoading) {
@@ -35,17 +34,19 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
     console.log("DashboardLayout rendering for user role:", user.role);
 
     return (
-      <SidebarProvider>
-        <div className="min-h-screen flex w-full">
-          <AppSidebar />
-          <main className="flex-1 overflow-auto relative">
-            <SidebarRail className="z-30" />
-            <div className="p-4">
-              {children}
-            </div>
-          </main>
-        </div>
-      </SidebarProvider>
+      <div className="min-h-screen flex w-full">
+        <AppSidebar />
+        <main className="flex-1 overflow-auto relative">
+          <SidebarRail className="z-30" />
+          <div className="p-4">
+            {children ? children : (
+              <div className="text-center py-12">
+                <p>No content to display. Please check route configuration.</p>
+              </div>
+            )}
+          </div>
+        </main>
+      </div>
     );
   } catch (error) {
     console.error("Auth context error in DashboardLayout:", error);
