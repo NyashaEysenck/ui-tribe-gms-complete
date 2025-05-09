@@ -7,6 +7,7 @@ import DashboardLayout from "@/components/dashboard/DashboardLayout";
 // Higher-order component to protect routes based on authentication
 export const RequireAuth = () => {
   const { isAuthenticated, isLoading } = useAuth();
+  console.log("RequireAuth - Auth state:", { isAuthenticated, isLoading });
 
   if (isLoading) {
     return (
@@ -17,9 +18,11 @@ export const RequireAuth = () => {
   }
 
   if (!isAuthenticated) {
+    console.log("RequireAuth - Not authenticated, redirecting to login");
     return <Navigate to="/login" state={{ message: "Please sign in to access this page" }} replace />;
   }
 
+  console.log("RequireAuth - User is authenticated, rendering protected content");
   return (
     <DashboardLayout>
       <Outlet />
@@ -28,7 +31,6 @@ export const RequireAuth = () => {
 };
 
 // Higher-order component to restrict access based on user role
-// Updated to accept children prop
 export const RequireRole = ({ 
   allowedRoles, 
   children 
@@ -37,6 +39,7 @@ export const RequireRole = ({
   children: React.ReactNode 
 }) => {
   const { user, isLoading } = useAuth();
+  console.log("RequireRole - Checking role access:", { userRole: user?.role, allowedRoles, isLoading });
 
   if (isLoading) {
     return (
@@ -47,6 +50,7 @@ export const RequireRole = ({
   }
 
   if (!user || !allowedRoles.includes(user.role)) {
+    console.log("RequireRole - Access denied, user role not in allowed roles");
     return (
       <div className="p-6">
         <h1 className="text-2xl font-bold text-red-600 mb-4">Access Denied</h1>
@@ -60,5 +64,6 @@ export const RequireRole = ({
     );
   }
 
+  console.log("RequireRole - Access granted for role:", user.role);
   return <>{children}</>;
 };
