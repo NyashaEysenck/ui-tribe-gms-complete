@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -5,8 +6,51 @@ import { Button } from "@/components/ui/button";
 import { BarChart2, Download, Filter, Plus, PieChart } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { BarChart } from "@/components/charts/BarChart";
+import { LineChart } from "@/components/charts/LineChart";
+import { PieChart as PieChartComponent } from "@/components/charts/PieChart";
+import { StackedBarChart } from "@/components/charts/StackedBarChart";
 
 const FinancePage: React.FC = () => {
+  // Sample data for charts
+  const budgetCategoriesData = [
+    { name: 'Personnel', value: 520000 },
+    { name: 'Equipment', value: 245000 },
+    { name: 'Operations', value: 185000 },
+    { name: 'Travel', value: 125000 },
+    { name: 'Overhead', value: 98000 },
+    { name: 'Other', value: 62000 },
+  ];
+
+  const monthlyExpenditureData = [
+    { month: 'Jan', expenditure: 68500 },
+    { month: 'Feb', expenditure: 72000 },
+    { month: 'Mar', expenditure: 79500 },
+    { month: 'Apr', expenditure: 84200 },
+    { month: 'May', expenditure: 78000 },
+    { month: 'Jun', expenditure: 82500 },
+    { month: 'Jul', expenditure: 90000 },
+    { month: 'Aug', expenditure: 96200 },
+    { month: 'Sep', expenditure: 88500 },
+    { month: 'Oct', expenditure: 84000 },
+    { month: 'Nov', expenditure: 80000 },
+    { month: 'Dec', expenditure: 82500 },
+  ];
+
+  const departmentFundingData = [
+    { department: 'Computer Science', funding: 320000, grants: 14 },
+    { department: 'Medicine', funding: 285000, grants: 12 },
+    { department: 'Engineering', funding: 240000, grants: 9 },
+    { department: 'Agriculture', funding: 195000, grants: 8 },
+  ];
+
+  const utilizationByDepartmentData = [
+    { department: 'Computer Science', utilized: 225000, remaining: 95000 },
+    { department: 'Medicine', utilized: 210000, remaining: 75000 },
+    { department: 'Engineering', utilized: 175000, remaining: 65000 },
+    { department: 'Agriculture', utilized: 130000, remaining: 65000 },
+  ];
+
   return (
     <div className="p-6">
       <div className="flex items-center justify-between mb-6">
@@ -109,8 +153,13 @@ const FinancePage: React.FC = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="h-[300px] bg-[#cf2e2e]/5 rounded-md flex items-center justify-center mb-4">
-                  [Pie Chart Placeholder]
+                <div className="h-[300px] mb-4">
+                  <PieChartComponent 
+                    data={budgetCategoriesData} 
+                    colors={["#cf2e2e", "#3b82f6", "#22c55e", "#f59e0b", "#8b5cf6", "#6b7280"]} 
+                    innerRadius={40} 
+                    outerRadius={120} 
+                  />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="flex items-center">
@@ -167,8 +216,13 @@ const FinancePage: React.FC = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="h-[300px] bg-[#cf2e2e]/5 rounded-md flex items-center justify-center mb-4">
-                  [Bar Chart Placeholder]
+                <div className="h-[300px] mb-4">
+                  <BarChart 
+                    data={monthlyExpenditureData} 
+                    xAxisKey="month" 
+                    barKey="expenditure" 
+                    barColor="#cf2e2e" 
+                  />
                 </div>
                 <div className="grid grid-cols-3 gap-4 text-center">
                   <div className="border rounded-md p-2">
@@ -416,30 +470,24 @@ const FinancePage: React.FC = () => {
               
               <div className="border rounded-lg p-4">
                 <h3 className="font-medium mb-4">Budget Allocation by Department</h3>
-                <div className="h-[300px] bg-[#cf2e2e]/5 rounded-md flex items-center justify-center mb-4">
-                  [Department Budget Chart Placeholder]
+                <div className="h-[300px] mb-4">
+                  <StackedBarChart 
+                    data={utilizationByDepartmentData} 
+                    xAxisKey="department" 
+                    bars={[
+                      { key: "utilized", color: "#cf2e2e" },
+                      { key: "remaining", color: "#8E9196" }
+                    ]} 
+                  />
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  <div className="border rounded-md p-2">
-                    <h4 className="text-xs text-muted-foreground mb-1">Computer Science</h4>
-                    <p className="font-medium">$320,000</p>
-                    <p className="text-xs text-muted-foreground mt-1">14 grants</p>
-                  </div>
-                  <div className="border rounded-md p-2">
-                    <h4 className="text-xs text-muted-foreground mb-1">Medicine</h4>
-                    <p className="font-medium">$285,000</p>
-                    <p className="text-xs text-muted-foreground mt-1">12 grants</p>
-                  </div>
-                  <div className="border rounded-md p-2">
-                    <h4 className="text-xs text-muted-foreground mb-1">Engineering</h4>
-                    <p className="font-medium">$240,000</p>
-                    <p className="text-xs text-muted-foreground mt-1">9 grants</p>
-                  </div>
-                  <div className="border rounded-md p-2">
-                    <h4 className="text-xs text-muted-foreground mb-1">Agriculture</h4>
-                    <p className="font-medium">$195,000</p>
-                    <p className="text-xs text-muted-foreground mt-1">8 grants</p>
-                  </div>
+                  {departmentFundingData.map((dept, index) => (
+                    <div key={index} className="border rounded-md p-2">
+                      <h4 className="text-xs text-muted-foreground mb-1">{dept.department}</h4>
+                      <p className="font-medium">${dept.funding.toLocaleString()}</p>
+                      <p className="text-xs text-muted-foreground mt-1">{dept.grants} grants</p>
+                    </div>
+                  ))}
                 </div>
               </div>
             </CardContent>
@@ -610,3 +658,4 @@ const FinancePage: React.FC = () => {
 };
 
 export default FinancePage;
+

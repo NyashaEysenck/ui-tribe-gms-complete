@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -12,8 +11,109 @@ import {
   TableCell 
 } from "@/components/ui/table";
 import { BarChart2, Calendar, Download, FileText, Filter, Printer, Save } from "lucide-react";
+import { BarChart } from "@/components/charts/BarChart";
+import { LineChart } from "@/components/charts/LineChart";
+import { PieChart } from "@/components/charts/PieChart";
+import { StackedBarChart } from "@/components/charts/StackedBarChart";
 
 const SystemReportsPage: React.FC = () => {
+  // Sample data for charts
+  const uptimeData = [
+    { day: '1', uptime: 100 },
+    { day: '2', uptime: 100 },
+    { day: '3', uptime: 99.8 },
+    { day: '4', uptime: 100 },
+    { day: '5', uptime: 100 },
+    { day: '6', uptime: 99.9 },
+    { day: '7', uptime: 100 },
+  ];
+
+  const usersData = [
+    { month: 'Jan', users: 82 },
+    { month: 'Feb', users: 90 },
+    { month: 'Mar', users: 98 },
+    { month: 'Apr', users: 105 },
+    { month: 'May', users: 110 },
+    { month: 'Jun', users: 115 },
+    { month: 'Jul', users: 118 },
+    { month: 'Aug', users: 120 },
+    { month: 'Sep', users: 128 },
+  ];
+
+  const storageData = [
+    { month: 'Jan', storage: 0.5 },
+    { month: 'Feb', storage: 0.6 },
+    { month: 'Mar', storage: 0.7 },
+    { month: 'Apr', storage: 0.8 },
+    { month: 'May', storage: 0.9 },
+    { month: 'Jun', storage: 1.0 },
+    { month: 'Jul', storage: 1.1 },
+    { month: 'Aug', storage: 1.2 },
+    { month: 'Sep', storage: 1.2 },
+  ];
+
+  const performanceData = [
+    { time: '8am', response: 110, cpu: 30, memory: 45 },
+    { time: '9am', response: 120, cpu: 35, memory: 48 },
+    { time: '10am', response: 145, cpu: 42, memory: 55 },
+    { time: '11am', response: 160, cpu: 48, memory: 60 },
+    { time: '12pm', response: 170, cpu: 52, memory: 65 },
+    { time: '1pm', response: 180, cpu: 60, memory: 70 },
+    { time: '2pm', response: 175, cpu: 58, memory: 68 },
+    { time: '3pm', response: 165, cpu: 55, memory: 64 },
+    { time: '4pm', response: 150, cpu: 45, memory: 58 },
+    { time: '5pm', response: 130, cpu: 38, memory: 50 },
+  ];
+
+  const apiUsageData = [
+    { endpoint: '/users', requests: 2500, time: 120 },
+    { endpoint: '/grants', requests: 1800, time: 150 },
+    { endpoint: '/reports', requests: 1200, time: 130 },
+    { endpoint: '/auth', requests: 3200, time: 90 },
+  ];
+
+  const grantsByStatusData = [
+    { name: 'Active', value: 128 },
+    { name: 'Pending', value: 42 },
+    { name: 'Completed', value: 95 },
+    { name: 'Rejected', value: 78 },
+  ];
+
+  const grantsByDepartmentData = [
+    { department: 'Sciences', grants: 35 },
+    { department: 'Engineering', grants: 30 },
+    { department: 'Humanities', grants: 20 },
+    { department: 'Medicine', grants: 25 },
+    { department: 'Business', grants: 18 },
+    { department: 'Education', grants: 15 },
+  ];
+
+  const usersByRoleData = [
+    { name: 'Researchers', value: 120 },
+    { name: 'Grant Officers', value: 48 },
+    { name: 'Admins', value: 15 },
+    { name: 'Reviewers', value: 65 },
+  ];
+
+  const usersByDepartmentData = [
+    { department: 'Sciences', users: 45 },
+    { department: 'Engineering', users: 38 },
+    { department: 'Humanities', users: 25 },
+    { department: 'Medicine', users: 32 },
+    { department: 'Business', users: 22 },
+    { department: 'Education', users: 18 },
+  ];
+  
+  const activeUsersData = [
+    { day: 'Mon', users: 42 },
+    { day: 'Tue', users: 38 },
+    { day: 'Wed', users: 45 },
+    { day: 'Thu', users: 40 },
+    { day: 'Fri', users: 52 },
+    { day: 'Sat', users: 25 },
+    { day: 'Sun', users: 30 },
+  ];
+
   return (
     <div className="p-6">
       <div className="flex items-center justify-between mb-6">
@@ -61,8 +161,8 @@ const SystemReportsPage: React.FC = () => {
                 <p className="text-xs text-muted-foreground">
                   Last 30 days
                 </p>
-                <div className="mt-4 h-[80px] w-full bg-[#cf2e2e]/5 rounded-md flex items-center justify-center">
-                  [Uptime Chart Placeholder]
+                <div className="mt-4 h-[80px] w-full">
+                  <LineChart data={uptimeData} xAxisKey="day" lineKey="uptime" lineColor="#22c55e" />
                 </div>
               </CardContent>
             </Card>
@@ -81,8 +181,8 @@ const SystemReportsPage: React.FC = () => {
                 <p className="text-xs text-muted-foreground">
                   +12% from last month
                 </p>
-                <div className="mt-4 h-[80px] w-full bg-[#cf2e2e]/5 rounded-md flex items-center justify-center">
-                  [Users Chart Placeholder]
+                <div className="mt-4 h-[80px] w-full">
+                  <BarChart data={usersData.slice(-5)} xAxisKey="month" barKey="users" barColor="#3b82f6" />
                 </div>
               </CardContent>
             </Card>
@@ -101,8 +201,8 @@ const SystemReportsPage: React.FC = () => {
                 <p className="text-xs text-muted-foreground">
                   +0.3 GB from last month
                 </p>
-                <div className="mt-4 h-[80px] w-full bg-[#cf2e2e]/5 rounded-md flex items-center justify-center">
-                  [Storage Chart Placeholder]
+                <div className="mt-4 h-[80px] w-full">
+                  <LineChart data={storageData} xAxisKey="month" lineKey="storage" lineColor="#8b5cf6" />
                 </div>
               </CardContent>
             </Card>
@@ -125,8 +225,13 @@ const SystemReportsPage: React.FC = () => {
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="h-[300px] bg-[#cf2e2e]/5 rounded-md flex items-center justify-center mb-4">
-                  [System Performance Chart Placeholder]
+                <div className="h-[300px] mb-4">
+                  <LineChart 
+                    data={performanceData} 
+                    xAxisKey="time" 
+                    lineKey="response" 
+                    lineColor="#cf2e2e" 
+                  />
                 </div>
                 <div className="grid grid-cols-3 gap-4 text-center">
                   <div className="border rounded-md p-2">
@@ -162,9 +267,15 @@ const SystemReportsPage: React.FC = () => {
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="h-[300px] bg-[#cf2e2e]/5 rounded-md flex items-center justify-center mb-4">
-                  [API Usage Chart Placeholder]
+                <div className="h-[300px] mb-4">
+                  <BarChart 
+                    data={apiUsageData} 
+                    xAxisKey="endpoint" 
+                    barKey="requests" 
+                    barColor="#3b82f6" 
+                  />
                 </div>
+                
                 <Table>
                   <TableHeader>
                     <TableRow>
@@ -225,11 +336,21 @@ const SystemReportsPage: React.FC = () => {
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                <div className="h-[300px] bg-[#cf2e2e]/5 rounded-md flex items-center justify-center">
-                  [Grants by Status Chart Placeholder]
+                <div className="h-[300px]">
+                  <PieChart 
+                    data={grantsByStatusData} 
+                    colors={["#22c55e", "#f59e0b", "#3b82f6", "#ef4444"]} 
+                    innerRadius={50} 
+                    outerRadius={120} 
+                  />
                 </div>
-                <div className="h-[300px] bg-[#cf2e2e]/5 rounded-md flex items-center justify-center">
-                  [Grants by Department Chart Placeholder]
+                <div className="h-[300px]">
+                  <BarChart 
+                    data={grantsByDepartmentData} 
+                    xAxisKey="department" 
+                    barKey="grants" 
+                    barColor="#cf2e2e" 
+                  />
                 </div>
               </div>
               
@@ -335,20 +456,35 @@ const SystemReportsPage: React.FC = () => {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                 <div className="space-y-2">
                   <h3 className="text-sm font-medium">Users by Role</h3>
-                  <div className="h-[200px] bg-[#cf2e2e]/5 rounded-md flex items-center justify-center">
-                    [Pie Chart Placeholder]
+                  <div className="h-[200px]">
+                    <PieChart 
+                      data={usersByRoleData} 
+                      colors={["#cf2e2e", "#3b82f6", "#22c55e", "#f59e0b"]} 
+                      innerRadius={40} 
+                      outerRadius={80} 
+                    />
                   </div>
                 </div>
                 <div className="space-y-2">
                   <h3 className="text-sm font-medium">Users by Department</h3>
-                  <div className="h-[200px] bg-[#cf2e2e]/5 rounded-md flex items-center justify-center">
-                    [Bar Chart Placeholder]
+                  <div className="h-[200px]">
+                    <BarChart 
+                      data={usersByDepartmentData} 
+                      xAxisKey="department" 
+                      barKey="users" 
+                      barColor="#3b82f6" 
+                    />
                   </div>
                 </div>
                 <div className="space-y-2">
                   <h3 className="text-sm font-medium">Active Users Over Time</h3>
-                  <div className="h-[200px] bg-[#cf2e2e]/5 rounded-md flex items-center justify-center">
-                    [Line Chart Placeholder]
+                  <div className="h-[200px]">
+                    <LineChart 
+                      data={usersData} 
+                      xAxisKey="month" 
+                      lineKey="users" 
+                      lineColor="#22c55e" 
+                    />
                   </div>
                 </div>
               </div>
@@ -394,8 +530,13 @@ const SystemReportsPage: React.FC = () => {
               
               <div className="border rounded-lg p-4">
                 <h3 className="font-medium mb-4">Login Activity (Last 7 Days)</h3>
-                <div className="h-[200px] bg-[#cf2e2e]/5 rounded-md flex items-center justify-center mb-2">
-                  [Login Activity Chart Placeholder]
+                <div className="h-[200px] mb-2">
+                  <BarChart 
+                    data={activeUsersData} 
+                    xAxisKey="day" 
+                    barKey="users" 
+                    barColor="#cf2e2e" 
+                  />
                 </div>
                 <div className="grid grid-cols-7 gap-2 text-center text-xs">
                   {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day, i) => (

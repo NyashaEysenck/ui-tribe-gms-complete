@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -13,8 +12,84 @@ import {
   TableHeader,
   TableRow
 } from "@/components/ui/table";
+import { BarChart } from "@/components/charts/BarChart";
+import { PieChart as PieChartComponent } from "@/components/charts/PieChart";
+import { LineChart } from "@/components/charts/LineChart";
+import { StackedBarChart } from "@/components/charts/StackedBarChart";
 
 const ReportingPage: React.FC = () => {
+  // Sample data for charts
+  const activeGrantsData = [
+    { month: 'Jan', grants: 42 },
+    { month: 'Feb', grants: 38 },
+    { month: 'Mar', grants: 45 },
+    { month: 'Apr', grants: 40 },
+    { month: 'May', grants: 35 },
+    { month: 'Jun', grants: 48 },
+    { month: 'Jul', grants: 52 },
+    { month: 'Aug', grants: 49 },
+    { month: 'Sep', grants: 54 },
+    { month: 'Oct', grants: 52 },
+    { month: 'Nov', grants: 48 },
+    { month: 'Dec', grants: 50 },
+  ];
+
+  const fundingData = [
+    { month: 'Jan', amount: 150000 },
+    { month: 'Feb', amount: 180000 },
+    { month: 'Mar', amount: 220000 },
+    { month: 'Apr', amount: 240000 },
+    { month: 'May', amount: 200000 },
+    { month: 'Jun', amount: 180000 },
+    { month: 'Jul', amount: 260000 },
+    { month: 'Aug', amount: 280000 },
+    { month: 'Sep', amount: 300000 },
+    { month: 'Oct', amount: 240000 },
+    { month: 'Nov', amount: 220000 },
+    { month: 'Dec', amount: 250000 },
+  ];
+
+  const successRateData = [
+    { name: 'Approved', value: 42 },
+    { name: 'Rejected', value: 58 }
+  ];
+
+  const departmentFundingData = [
+    { department: 'Sciences', funding: 520000 },
+    { department: 'Engineering', funding: 420000 },
+    { department: 'Humanities', funding: 280000 },
+    { department: 'Other', funding: 180000 },
+  ];
+
+  const monthlyExpenditure = [
+    { month: 'Jan', expenditure: 32000 },
+    { month: 'Feb', expenditure: 48000 },
+    { month: 'Mar', expenditure: 51000 },
+    { month: 'Apr', expenditure: 62000 },
+    { month: 'May', expenditure: 55000 },
+    { month: 'Jun', expenditure: 72000 },
+    { month: 'Jul', expenditure: 80000 },
+    { month: 'Aug', expenditure: 96200 },
+    { month: 'Sep', expenditure: 84000 },
+    { month: 'Oct', expenditure: 68000 },
+    { month: 'Nov', expenditure: 72000 },
+    { month: 'Dec', expenditure: 70000 },
+  ];
+
+  const grantsByStatusData = [
+    { name: 'Active', value: 128 },
+    { name: 'Completed', value: 95 },
+    { name: 'Pending', value: 42 },
+    { name: 'Rejected', value: 78 },
+  ];
+
+  const grantsByDepartmentData = [
+    { department: 'Sciences', active: 45, completed: 32, pending: 12 },
+    { department: 'Engineering', active: 38, completed: 28, pending: 10 },
+    { department: 'Humanities', active: 25, completed: 18, pending: 8 },
+    { department: 'Medicine', active: 20, completed: 17, pending: 12 },
+  ];
+
   return (
     <div className="p-6">
       <div className="flex items-center justify-between mb-6">
@@ -56,8 +131,8 @@ const ReportingPage: React.FC = () => {
                 <p className="text-xs text-muted-foreground">
                   +12% from previous quarter
                 </p>
-                <div className="mt-4 h-[80px] w-full bg-[#cf2e2e]/5 rounded-md flex items-center justify-center">
-                  [Bar Chart Placeholder]
+                <div className="mt-4 h-[80px] w-full">
+                  <BarChart data={activeGrantsData.slice(-6)} xAxisKey="month" barKey="grants" />
                 </div>
               </CardContent>
             </Card>
@@ -76,8 +151,8 @@ const ReportingPage: React.FC = () => {
                 <p className="text-xs text-muted-foreground">
                   $720K awarded this quarter
                 </p>
-                <div className="mt-4 h-[80px] w-full bg-[#cf2e2e]/5 rounded-md flex items-center justify-center">
-                  [Line Chart Placeholder]
+                <div className="mt-4 h-[80px] w-full">
+                  <LineChart data={fundingData.slice(-6)} xAxisKey="month" lineKey="amount" />
                 </div>
               </CardContent>
             </Card>
@@ -94,8 +169,13 @@ const ReportingPage: React.FC = () => {
                 <p className="text-xs text-muted-foreground">
                   +5% from previous quarter
                 </p>
-                <div className="mt-4 h-[80px] w-full bg-[#cf2e2e]/5 rounded-md flex items-center justify-center">
-                  [Pie Chart Placeholder]
+                <div className="mt-4 h-[80px] w-full">
+                  <PieChartComponent 
+                    data={successRateData} 
+                    colors={["#cf2e2e", "#8E9196"]} 
+                    innerRadius={25} 
+                    outerRadius={35}
+                  />
                 </div>
               </CardContent>
             </Card>
@@ -143,8 +223,13 @@ const ReportingPage: React.FC = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="h-[250px] bg-[#cf2e2e]/5 rounded-md flex items-center justify-center mb-4">
-                  [Bar Chart Placeholder]
+                <div className="h-[250px] mb-4">
+                  <BarChart 
+                    data={departmentFundingData} 
+                    xAxisKey="department" 
+                    barKey="funding" 
+                    barColor="#cf2e2e"
+                  />
                 </div>
                 <div className="flex items-center justify-between text-sm">
                   <div className="flex items-center">
@@ -245,8 +330,16 @@ const ReportingPage: React.FC = () => {
               </div>
             </CardHeader>
             <CardContent>
-              <div className="h-[300px] bg-[#cf2e2e]/5 rounded-md flex items-center justify-center mb-6">
-                [Grant Performance Chart Placeholder]
+              <div className="h-[300px] mb-6">
+                <StackedBarChart 
+                  data={grantsByDepartmentData} 
+                  xAxisKey="department" 
+                  bars={[
+                    { key: "active", color: "#22c55e" },
+                    { key: "completed", color: "#3b82f6" },
+                    { key: "pending", color: "#f59e0b" }
+                  ]} 
+                />
               </div>
               
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
