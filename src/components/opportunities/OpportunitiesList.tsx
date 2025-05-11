@@ -1,7 +1,6 @@
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { GrantOpportunity } from "@/types/grants";
 import { 
   Card,
   CardContent, 
@@ -27,78 +26,31 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
-import { db } from "@/integrations/supabase/typedClient";
+import { useGrantsData } from "@/hooks/useGrantsData";
 
 const OpportunitiesList: React.FC = () => {
-  const [opportunities, setOpportunities] = useState<GrantOpportunity[]>([]);
+  const { opportunities, loading } = useGrantsData();
   const [searchQuery, setSearchQuery] = useState("");
   const [categoryFilter, setCategoryFilter] = useState<string>("all");
   const [sourceFilter, setSourceFilter] = useState<string>("all");
-  const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    fetchOpportunities();
-  }, []);
-
-  // Fetch opportunities from the database
-  const fetchOpportunities = async () => {
-    setIsLoading(true);
-    try {
-      const { data, error } = await db
-        .from('grant_opportunities')
-        .select('*')
-        .order('deadline', { ascending: true });
-      
-      if (error) throw error;
-      
-      // Transform data to match GrantOpportunity type
-      const transformedOpportunities: GrantOpportunity[] = data.map(item => ({
-        id: item.id,
-        title: item.title,
-        description: item.description,
-        applicationUrl: item.application_url || "",
-        eligibility: item.eligibility,
-        fundingAmount: item.funding_amount,
-        fundingSource: item.funding_source as any,
-        category: item.category as any,
-        deadline: item.deadline,
-        postedBy: item.posted_by || "",
-        postedDate: item.posted_date,
-      }));
-      
-      setOpportunities(transformedOpportunities);
-    } catch (error: any) {
-      console.error("Error fetching opportunities:", error);
-      toast.error("Failed to load grant opportunities");
-      
-      // Fallback to localStorage for demo purposes
-      try {
-        const storedOpportunities = JSON.parse(localStorage.getItem("au_gms_opportunities") || "[]");
-        setOpportunities(storedOpportunities);
-      } catch (e) {
-        console.error("Error loading fallback opportunities:", e);
-      }
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleApply = (opportunity: GrantOpportunity) => {
-    if (opportunity.applicationUrl) {
+  const handleApply = (opportunityId: string, applicationUrl?: string) => {
+    if (applicationUrl) {
       // Open external application URL in a new tab
-      window.open(opportunity.applicationUrl, "_blank");
+      window.open(applicationUrl, "_blank");
     } else {
       // Navigate to the internal application form with pre-populated fields
-      navigate("/grant-application", { 
-        state: { 
-          category: opportunity.category,
-          fundingSource: opportunity.fundingSource,
-          opportunityTitle: opportunity.title
-        }
-      });
+      const opportunity = opportunities.find(opp => opp.id === opportunityId);
+      if (opportunity) {
+        navigate("/grant-application", { 
+          state: { 
+            category: opportunity.category,
+            fundingSource: opportunity.fundingSource,
+            opportunityTitle: opportunity.title
+          }
+        });
+      }
     }
   };
 
@@ -181,7 +133,7 @@ const OpportunitiesList: React.FC = () => {
         </Select>
       </div>
 
-      {isLoading ? (
+      {loading ? (
         <div className="flex justify-center items-center h-64">
           <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
         </div>
@@ -230,7 +182,7 @@ const OpportunitiesList: React.FC = () => {
                   variant={opportunity.applicationUrl ? "outline" : "default"}
                   className="w-full"
                   disabled={!isUpcoming(opportunity.deadline)}
-                  onClick={() => handleApply(opportunity)}
+                  onClick={() => handleApply(opportunity.id, opportunity.applicationUrl)}
                 >
                   {opportunity.applicationUrl ? (
                     <>

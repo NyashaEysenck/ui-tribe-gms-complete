@@ -36,9 +36,9 @@ export function useGrantsData() {
         amount: grant.amount,
         startDate: grant.start_date,
         endDate: grant.end_date,
-        status: grant.status as GrantStatus, // Add explicit type cast to GrantStatus
-        category: grant.category as GrantCategory, // Add explicit type cast
-        fundingSource: grant.funding_source as FundingSource, // Add explicit type cast
+        status: grant.status as GrantStatus,
+        category: grant.category as GrantCategory,
+        fundingSource: grant.funding_source as FundingSource,
         submittedBy: grant.submitted_by,
         submittedDate: grant.submitted_date,
         reviewComments: grant.review_comments,
@@ -93,6 +93,34 @@ export function useGrantsData() {
     }
   }, []); // Empty dependency array since it doesn't depend on any props or state
   
+  // New deleteOpportunity function to maintain a single source of truth
+  const deleteOpportunity = useCallback(async (id: string) => {
+    if (!user || (user.role !== 'grant_office' && user.role !== 'admin')) {
+      toast.error("You don't have permission to delete opportunities");
+      return false;
+    }
+    
+    try {
+      // Delete the opportunity from the database
+      const { error } = await supabase
+        .from('grant_opportunities')
+        .delete()
+        .eq('id', id);
+      
+      if (error) throw error;
+      
+      // Update local state immediately for better UX
+      setOpportunities(prev => prev.filter(opp => opp.id !== id));
+      
+      toast.success("Grant opportunity deleted successfully");
+      return true;
+    } catch (error: any) {
+      console.error("Error deleting opportunity:", error);
+      toast.error("Failed to delete opportunity: " + error.message);
+      return false;
+    }
+  }, [user]);
+
   // Submit a new grant application
   const submitGrantApplication = async (grant: Partial<Grant>) => {
     if (!user) return null;
@@ -138,9 +166,9 @@ export function useGrantsData() {
         amount: data[0].amount,
         startDate: data[0].start_date,
         endDate: data[0].end_date,
-        status: data[0].status as GrantStatus, // Add explicit type cast
-        category: data[0].category as GrantCategory, // Add explicit type cast
-        fundingSource: data[0].funding_source as FundingSource, // Add explicit type cast
+        status: data[0].status as GrantStatus,
+        category: data[0].category as GrantCategory,
+        fundingSource: data[0].funding_source as FundingSource,
         submittedBy: data[0].submitted_by,
         submittedDate: data[0].submitted_date,
         reviewComments: data[0].review_comments,
@@ -185,18 +213,8 @@ export function useGrantsData() {
         
       if (error) throw error;
       
-      toast.success("Grant opportunity published successfully");
-      
-      // Notify all researchers about the new opportunity
-      await createNotificationForAllResearchers(
-        `New grant opportunity: ${opportunity.title}`,
-        "new_opportunity",
-        data[0].id,
-        "opportunity"
-      );
-      
-      // Transform the returned data to match GrantOpportunity type
-      return {
+      // Add to local state for immediate UI update
+      const newOpportunity = {
         id: data[0].id,
         title: data[0].title,
         description: data[0].description,
@@ -209,10 +227,73 @@ export function useGrantsData() {
         postedBy: data[0].posted_by || "",
         postedDate: data[0].posted_date,
       };
+      
+      setOpportunities(prev => [newOpportunity, ...prev]);
+      
+      toast.success("Grant opportunity published successfully");
+      
+      // Notify all researchers about the new opportunity
+      await createNotificationForAllResearchers(
+        `New grant opportunity: ${opportunity.title}`,
+        "new_opportunity",
+        data[0].id,
+        "opportunity"
+      );
+      
+      return newOpportunity;
     } catch (error: any) {
       console.error("Error creating grant opportunity:", error);
       toast.error("Failed to create opportunity: " + error.message);
       return null;
+    }
+  };
+  
+  // Update an existing grant opportunity
+  const updateGrantOpportunity = async (id: string, opportunity: Partial<GrantOpportunity>) => {
+    if (!user || (user.role !== 'grant_office' && user.role !== 'admin')) {
+      toast.error("You don't have permission to update grant opportunities");
+      return false;
+    }
+    
+    try {
+      const updateData = {
+        title: opportunity.title,
+        description: opportunity.description,
+        application_url: opportunity.applicationUrl,
+        eligibility: opportunity.eligibility,
+        funding_amount: opportunity.fundingAmount,
+        funding_source: opportunity.fundingSource,
+        category: opportunity.category,
+        deadline: opportunity.deadline,
+      };
+      
+      const { error } = await supabase
+        .from('grant_opportunities')
+        .update(updateData)
+        .eq('id', id);
+        
+      if (error) throw error;
+      
+      // Update the local state
+      setOpportunities(prev => prev.map(opp => 
+        opp.id === id ? { ...opp, ...opportunity } : opp
+      ));
+      
+      toast.success("Grant opportunity updated successfully");
+      
+      // Optionally notify researchers about the update
+      await createNotificationForAllResearchers(
+        `Grant opportunity updated: ${opportunity.title}`,
+        "opportunity_update",
+        id,
+        "opportunity"
+      );
+      
+      return true;
+    } catch (error: any) {
+      console.error("Error updating grant opportunity:", error);
+      toast.error("Failed to update opportunity: " + error.message);
+      return false;
     }
   };
   
@@ -245,6 +326,17 @@ export function useGrantsData() {
         .eq('id', grantId);
         
       if (error) throw error;
+      
+      // Update local state
+      setGrants(prev => prev.map(grant => 
+        grant.id === grantId ? { 
+          ...grant, 
+          status: status as GrantStatus, 
+          reviewComments: comments,
+          reviewedBy: user.id,
+          reviewedDate: new Date().toISOString()
+        } : grant
+      ));
       
       // Notify the researcher
       if (grantData.researcher_id) {
@@ -338,6 +430,8 @@ export function useGrantsData() {
     fetchOpportunities,
     submitGrantApplication,
     createGrantOpportunity,
+    updateGrantOpportunity,
+    deleteOpportunity,
     reviewGrantApplication,
     createNotification,
     createNotificationForAllResearchers,

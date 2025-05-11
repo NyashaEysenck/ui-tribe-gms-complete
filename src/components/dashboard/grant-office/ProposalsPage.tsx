@@ -1,3 +1,4 @@
+
 import React, { useState, useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -34,25 +35,13 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { supabase } from "@/integrations/supabase/client";
 
 const ProposalsPage: React.FC = () => {
   const { user } = useAuth();
-  const { opportunities, loading, fetchOpportunities } = useGrantsData();
+  const { opportunities, loading, fetchOpportunities, deleteOpportunity } = useGrantsData();
   const [searchQuery, setSearchQuery] = useState("");
   const [isDeleting, setIsDeleting] = useState<string | null>(null); // Track which opportunity is being deleted
-  const [localOpportunities, setLocalOpportunities] = useState(opportunities);
   const navigate = useNavigate();
-
-  // Update local opportunities when the fetched opportunities change
-  useEffect(() => {
-    setLocalOpportunities(opportunities);
-  }, [opportunities]);
-
-  // Load opportunities when component mounts
-  useEffect(() => {
-    fetchOpportunities();
-  }, [fetchOpportunities]);
 
   const handleCreateOpportunity = () => {
     navigate("/create-opportunity");
@@ -61,26 +50,16 @@ const ProposalsPage: React.FC = () => {
   const handleDeleteOpportunity = async (id: string) => {
     try {
       setIsDeleting(id); // Set the ID of the opportunity being deleted
-      // Delete the opportunity from the database
-      const { error } = await supabase
-        .from('grant_opportunities')
-        .delete()
-        .eq('id', id);
+      // Use the deleteOpportunity function from the hook
+      const success = await deleteOpportunity(id);
       
-      if (error) throw new Error(error.message);
+      if (!success) {
+        throw new Error("Failed to delete opportunity");
+      }
       
-      // Update local state immediately for better UX
-      setLocalOpportunities(prevOpportunities => 
-        prevOpportunities.filter(opp => opp.id !== id)
-      );
-      
-      // Also refresh the opportunities list from the server
-      await fetchOpportunities();
-      
-      toast.success("Grant opportunity deleted successfully");
     } catch (error: any) {
       console.error("Error deleting opportunity:", error);
-      toast.error("Failed to delete opportunity: " + error.message);
+      // Error is already handled in the hook with toast
     } finally {
       setIsDeleting(null); // Reset deleting state
     }
@@ -98,7 +77,7 @@ const ProposalsPage: React.FC = () => {
     navigate(`/opportunity-details/${opportunityId}`);
   };
 
-  const filteredOpportunities = localOpportunities.filter(opportunity => 
+  const filteredOpportunities = opportunities.filter(opportunity => 
     opportunity.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
     opportunity.description.toLowerCase().includes(searchQuery.toLowerCase())
   );
