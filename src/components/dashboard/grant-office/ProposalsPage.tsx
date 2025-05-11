@@ -1,5 +1,4 @@
-
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { 
@@ -38,7 +37,7 @@ import {
 
 const ProposalsPage: React.FC = () => {
   const { user } = useAuth();
-  const { opportunities, loading, fetchOpportunities, deleteOpportunity } = useGrantsData();
+  const { opportunities, loading, deleteOpportunity } = useGrantsData();
   const [searchQuery, setSearchQuery] = useState("");
   const [isDeleting, setIsDeleting] = useState<string | null>(null); // Track which opportunity is being deleted
   const navigate = useNavigate();
@@ -50,8 +49,11 @@ const ProposalsPage: React.FC = () => {
   const handleDeleteOpportunity = async (id: string) => {
     try {
       setIsDeleting(id); // Set the ID of the opportunity being deleted
+      console.log("Starting deletion process for opportunity:", id);
+      
       // Use the deleteOpportunity function from the hook
       const success = await deleteOpportunity(id);
+      console.log("Deletion result:", success);
       
       if (!success) {
         throw new Error("Failed to delete opportunity");
@@ -77,11 +79,6 @@ const ProposalsPage: React.FC = () => {
     navigate(`/opportunity-details/${opportunityId}`);
   };
 
-  const filteredOpportunities = opportunities.filter(opportunity => 
-    opportunity.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    opportunity.description.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
   const isUpcoming = (deadline: string) => {
     const deadlineDate = new Date(deadline);
     const now = new Date();
@@ -100,6 +97,11 @@ const ProposalsPage: React.FC = () => {
       </div>
     );
   }
+
+  const filteredOpportunities = opportunities.filter(opportunity => 
+    opportunity.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    opportunity.description.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <div className="p-6">

@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/auth/useAuth";
@@ -58,7 +57,7 @@ export function useGrantsData() {
     }
   }, [user]); // Add user to dependency array
   
-  // Use useCallback for fetchOpportunities as well
+  // Use useCallback for fetchOpportunities to ensure consistent reference
   const fetchOpportunities = useCallback(async () => {
     try {
       setLoading(true);
@@ -93,7 +92,7 @@ export function useGrantsData() {
     }
   }, []); // Empty dependency array since it doesn't depend on any props or state
   
-  // New deleteOpportunity function to maintain a single source of truth
+  // Fixed deleteOpportunity function to properly delete from the database
   const deleteOpportunity = useCallback(async (id: string) => {
     if (!user || (user.role !== 'grant_office' && user.role !== 'admin')) {
       toast.error("You don't have permission to delete opportunities");
@@ -101,16 +100,27 @@ export function useGrantsData() {
     }
     
     try {
+      console.log("Deleting opportunity with ID:", id);
+      
       // Delete the opportunity from the database
       const { error } = await supabase
         .from('grant_opportunities')
         .delete()
         .eq('id', id);
       
-      if (error) throw error;
+      if (error) {
+        console.error("Supabase deletion error:", error);
+        throw error;
+      }
+      
+      console.log("Deletion succeeded in database");
       
       // Update local state immediately for better UX
-      setOpportunities(prev => prev.filter(opp => opp.id !== id));
+      setOpportunities(prev => {
+        const filtered = prev.filter(opp => opp.id !== id);
+        console.log("Updated opportunities length:", filtered.length);
+        return filtered;
+      });
       
       toast.success("Grant opportunity deleted successfully");
       return true;
