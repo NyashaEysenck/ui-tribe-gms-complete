@@ -49,19 +49,14 @@ const ProposalsPage: React.FC = () => {
   const handleDeleteOpportunity = async (id: string) => {
     try {
       setIsDeleting(id); // Set the ID of the opportunity being deleted
-      console.log("Starting deletion process for opportunity:", id);
       
       // Use the deleteOpportunity function from the hook
       const success = await deleteOpportunity(id);
-      console.log("Deletion result:", success);
       
       if (!success) {
-        throw new Error("Failed to delete opportunity");
+        // The hook will have already shown an error toast
+        return;
       }
-      
-    } catch (error: any) {
-      console.error("Error deleting opportunity:", error);
-      // Error is already handled in the hook with toast
     } finally {
       setIsDeleting(null); // Reset deleting state
     }
