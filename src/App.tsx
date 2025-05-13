@@ -79,7 +79,7 @@ const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       {/* Changed to use / for development environment */}
-      <BrowserRouter basename="/ui-tribe-gms-complete-32">
+      <BrowserRouter basename="/ui-tribe-gms-complete">
         <AuthProvider>
           <SidebarProvider defaultOpen={true}>
             <TooltipProvider>
