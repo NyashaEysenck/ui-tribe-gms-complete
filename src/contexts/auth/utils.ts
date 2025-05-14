@@ -4,6 +4,7 @@ import { db } from "@/integrations/supabase/typedClient";
 
 export async function fetchUserProfile(userId: string): Promise<User | null> {
   try {
+    console.log("Fetching user profile for ID:", userId);
     const { data: profile, error } = await db
       .from('profiles')
       .select('*')
@@ -16,11 +17,28 @@ export async function fetchUserProfile(userId: string): Promise<User | null> {
     }
 
     if (profile) {
+      console.log("Found profile:", profile);
+      
+      // Ensure role is one of the valid roles
+      let role = profile.role as UserRole;
+      
+      // Map role values to ensure they match expected values
+      if (role === 'grant_office' || role === 'grantoffice' as any) {
+        role = 'grant_office';
+      } else if (role === 'admin') {
+        role = 'admin';
+      } else {
+        // Default to researcher if role is invalid or missing
+        role = 'researcher';
+      }
+      
+      console.log("Mapped role:", role);
+      
       return {
         id: profile.id,
         name: profile.name,
         email: profile.email,
-        role: profile.role as UserRole,
+        role: role,
         department: profile.department || undefined,
         profileImage: "/placeholder.svg" // Default image
       };
