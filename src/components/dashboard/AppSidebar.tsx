@@ -2,6 +2,7 @@ import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { cn } from "@/lib/utils";
+import { getAssetPath } from "@/lib/assetUtils";
 import {
   Sidebar,
   SidebarContent,
@@ -199,7 +200,7 @@ export const AppSidebar: React.FC = () => {
       <SidebarHeader className="border-b py-3 px-4 flex justify-between items-center bg-[#cf2e2e] text-white">
         <div className="flex items-center gap-2">
           <img 
-            src="/lovable-uploads/4af217f9-8ca2-4acc-8ba4-9320b16cf567.png" 
+            src={getAssetPath("/lovable-uploads/4af217f9-8ca2-4acc-8ba4-9320b16cf567.png")} 
             alt="Africa University" 
             className="h-16 w-auto" 
           />

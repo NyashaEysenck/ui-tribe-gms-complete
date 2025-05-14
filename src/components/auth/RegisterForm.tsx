@@ -54,7 +54,7 @@ const RegisterForm: React.FC = () => {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-au-neutral-100 py-10">
+    <div className="flex min-h-screen items-center justify-center bg-au-neutral-100 py-10 w-full">
       <div className="fixed top-4 left-4 z-10">
         <Button asChild variant="ghost" size="sm" className="flex items-center gap-1">
           <Link to="/">
@@ -63,7 +63,8 @@ const RegisterForm: React.FC = () => {
           </Link>
         </Button>
       </div>
-      <Card className="w-full max-w-md shadow-lg">
+      <div className="w-full max-w-md px-4">
+        <Card className="w-full shadow-lg">
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl font-bold text-center">Create an Account</CardTitle>
           <CardDescription className="text-center">
@@ -144,6 +145,7 @@ const RegisterForm: React.FC = () => {
           </p>
         </CardFooter>
       </Card>
+      </div>
     </div>
   );
 };

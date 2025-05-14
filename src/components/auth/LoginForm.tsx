@@ -7,7 +7,7 @@ import { Home } from "lucide-react";
 
 const LoginForm: React.FC = () => {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-au-neutral-100">
+    <div className="flex min-h-screen items-center justify-center bg-au-neutral-100 w-full">
       <div className="fixed top-4 left-4 z-10">
         <Button asChild variant="ghost" size="sm" className="flex items-center gap-1">
           <Link to="/">
@@ -16,7 +16,9 @@ const LoginForm: React.FC = () => {
           </Link>
         </Button>
       </div>
-      <LoginCard />
+      <div className="w-full max-w-md px-4">
+        <LoginCard />
+      </div>
     </div>
   );
 };

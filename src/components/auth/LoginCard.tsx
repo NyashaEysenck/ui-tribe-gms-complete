@@ -20,7 +20,7 @@ const LoginCard: React.FC = () => {
   } = useLoginForm();
 
   return (
-    <Card className="w-full max-w-md shadow-lg">
+    <Card className="w-full shadow-lg">
       <CardHeader className="space-y-1">
         <CardTitle className="text-2xl font-bold text-center">Sign In</CardTitle>
         <CardDescription className="text-center">

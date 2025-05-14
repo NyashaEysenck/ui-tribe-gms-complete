@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowRight, Calendar, DollarSign, FileText, BarChart3, Users, CheckCircle2 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { getAssetPath } from "@/lib/assetUtils";
 
 const LandingPage: React.FC = () => {
   return (
@@ -13,7 +14,7 @@ const LandingPage: React.FC = () => {
           <div className="flex flex-col md:flex-row items-center">
             <div className="max-w-3xl">
               <img 
-                src="/lovable-uploads/4af217f9-8ca2-4acc-8ba4-9320b16cf567.png" 
+                src={getAssetPath("/lovable-uploads/4af217f9-8ca2-4acc-8ba4-9320b16cf567.png")} 
                 alt="Africa University" 
                 className="h-32 mb-6"
               />
