@@ -30,17 +30,6 @@ const LoginFormFields: React.FC<LoginFormFieldsProps> = ({
 }) => {
   return (
     <form onSubmit={onSubmit} className="space-y-4">
-      {loginError && (
-        <Alert variant="destructive" className="mb-4">
-          <AlertDescription>{loginError}</AlertDescription>
-        </Alert>
-      )}
-
-      {locationMessage && (
-        <Alert className="mb-4 bg-blue-50 border-blue-200">
-          <AlertDescription>{locationMessage}</AlertDescription>
-        </Alert>
-      )}
       
       <div className="space-y-2">
         <Label htmlFor="email">Email</Label>
