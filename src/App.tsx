@@ -78,8 +78,8 @@ const App = () => {
   
   return (
     <QueryClientProvider client={queryClient}>
-      {/* Changed to use / for development environment */}
-      <BrowserRouter basename="/ui-tribe-gms-complete">
+      {/* Use dynamic basename based on environment */}
+      <BrowserRouter basename={import.meta.env.MODE === 'production' ? "/ui-tribe-gms-complete" : "/"}>
         <AuthProvider>
           <SidebarProvider defaultOpen={true}>
             <TooltipProvider>

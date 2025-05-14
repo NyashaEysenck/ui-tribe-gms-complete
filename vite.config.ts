@@ -7,7 +7,7 @@ import { componentTagger } from "lovable-tagger";
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
   // Remove the base path for development environment
-  base: mode === 'production' ? "/ui-tribe-gms-complete/" : "/",
+  base: mode === 'production' ? "/ui-tribe-gms-complete" : "/",
   server: {
     host: "::",
     port: 8080,
