@@ -1,15 +1,22 @@
-
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { ALL_GRANTS } from "@/data/mockData";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { BarChart2, CheckCircle, Clock, FileText, AlertCircle } from "lucide-react";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
+import { useAuth } from "@/contexts/auth/useAuth";
 
 const GrantOfficeDashboard: React.FC = () => {
+  const { user } = useAuth();
   const [statusFilter, setStatusFilter] = useState<string | null>(null);
+  
+  // Ensure only grant office users can access this dashboard
+  if (!user || user.role !== 'grant_office') {
+    console.log('Unauthorized access to grant office dashboard, redirecting to dashboard');
+    return <Navigate to="/dashboard" replace />;
+  }
   
   const pendingApplications = ALL_GRANTS.filter(grant => 
     grant.status === "submitted" || grant.status === "under_review"

@@ -1,6 +1,6 @@
 
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { RESEARCHER_GRANTS } from "@/data/mockData";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -11,7 +11,13 @@ import { ArrowRight, FileText, Calendar, BarChart2, Search } from "lucide-react"
 const ResearcherDashboard: React.FC = () => {
   const { user } = useAuth();
   
+  // Ensure only researchers can access this dashboard
   if (!user) return null;
+  
+  if (user.role !== 'researcher') {
+    console.log('Unauthorized access to researcher dashboard, redirecting to dashboard');
+    return <Navigate to="/dashboard" replace />;
+  }
   
   const activeGrants = RESEARCHER_GRANTS.filter(grant => 
     grant.status === "active" || grant.status === "approved"
