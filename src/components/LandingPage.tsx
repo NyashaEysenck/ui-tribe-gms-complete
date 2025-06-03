@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,7 +9,7 @@ const LandingPage: React.FC = () => {
   return (
     <div className="flex flex-col min-h-screen">
       {/* Hero Section */}
-      <section className="relative bg-[#cf2e2e] py-24 text-white">
+      <section className="relative bg-thinkgrants-blue py-24 text-white">
         <div className="au-container">
           <div className="flex flex-col md:flex-row items-center">
             <div className="max-w-3xl">
@@ -26,7 +25,7 @@ const LandingPage: React.FC = () => {
                 Unlock funding opportunities for your groundbreaking research at Africa University. Apply today and turn your innovative ideas into reality.
               </p>
               <div className="flex flex-wrap gap-4">
-                <Button asChild size="lg" variant="white" className="bg-black text-white hover:bg-black/90">
+                <Button asChild size="lg" variant="white" className="bg-white text-thinkgrants-blue hover:bg-white/90">
                   <Link to="/login">Apply Now</Link>
                 </Button>
                 <Button asChild size="lg" variant="outline" className="border-white bg-transparent text-white hover:bg-white/10">
@@ -43,27 +42,27 @@ const LandingPage: React.FC = () => {
       <section className="py-16">
         <div className="au-container">
           <h2 className="text-3xl font-bold text-center mb-4">Why Apply for Research Grants?</h2>
-          <p className="text-lg text-center max-w-3xl mx-auto mb-12 text-au-neutral-600">
+          <p className="text-lg text-center max-w-3xl mx-auto mb-12 text-thinkgrants-gray-600">
             Africa University is committed to supporting innovative research that addresses real-world challenges and contributes to knowledge advancement.
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             <FeatureCard 
-              icon={<DollarSign className="h-8 w-8 text-[#cf2e2e]" />}
+              icon={<DollarSign className="h-8 w-8 text-thinkgrants-blue" />}
               title="Financial Support"
               description="Secure funding from $5,000 to $500,000 for your research projects across various disciplines."
             />
             <FeatureCard 
-              icon={<Users className="h-8 w-8 text-[#cf2e2e]" />}
+              icon={<Users className="h-8 w-8 text-thinkgrants-blue" />}
               title="Collaboration Opportunities"
               description="Connect with fellow researchers and institutions worldwide to expand your research network."
             />
             <FeatureCard 
-              icon={<FileText className="h-8 w-8 text-[#cf2e2e]" />}
+              icon={<FileText className="h-8 w-8 text-thinkgrants-blue" />}
               title="Publication Support"
               description="Receive assistance for publishing your research in high-impact journals and conferences."
             />
             <FeatureCard 
-              icon={<BarChart3 className="h-8 w-8 text-[#cf2e2e]" />}
+              icon={<BarChart3 className="h-8 w-8 text-thinkgrants-blue" />}
               title="Career Advancement"
               description="Enhance your academic profile and reputation through funded research projects."
             />
@@ -72,7 +71,7 @@ const LandingPage: React.FC = () => {
       </section>
 
       {/* Featured Opportunities */}
-      <section className="py-16 bg-au-neutral-100">
+      <section className="py-16 bg-thinkgrants-gray-100">
         <div className="au-container">
           <h2 className="text-3xl font-bold text-center mb-12">Featured Funding Opportunities</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -96,7 +95,7 @@ const LandingPage: React.FC = () => {
             />
           </div>
           <div className="text-center mt-10">
-            <Button asChild variant="outline" className="group text-[#cf2e2e] border-[#cf2e2e] hover:bg-[#cf2e2e] hover:text-white">
+            <Button asChild variant="outline" className="group text-thinkgrants-blue border-thinkgrants-blue hover:bg-thinkgrants-blue hover:text-white">
               <Link to="/opportunities">
                 View All Opportunities 
                 <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
@@ -131,7 +130,7 @@ const LandingPage: React.FC = () => {
       </section>
 
       {/* Application Process */}
-      <section className="py-16 bg-au-neutral-100">
+      <section className="py-16 bg-thinkgrants-gray-100">
         <div className="au-container">
           <h2 className="text-3xl font-bold text-center mb-12">Simple Application Process</h2>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
@@ -160,14 +159,14 @@ const LandingPage: React.FC = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 bg-[#cf2e2e] text-white">
+      <section className="py-16 bg-thinkgrants-blue text-white">
         <div className="au-container text-center">
           <h2 className="text-3xl font-bold mb-6">Ready to Fund Your Research?</h2>
           <p className="text-xl mb-8 max-w-2xl mx-auto">
             Join hundreds of Africa University researchers who have successfully secured grants for their innovative work.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
-            <Button asChild size="lg" variant="white" className="bg-black text-white hover:bg-black/90">
+            <Button asChild size="lg" variant="white" className="bg-white text-thinkgrants-blue hover:bg-white/90">
               <Link to="/register">Create Account</Link>
             </Button>
             <Button asChild size="lg" variant="outline" className="border-white bg-transparent text-white hover:bg-white/10">
@@ -178,7 +177,7 @@ const LandingPage: React.FC = () => {
       </section>
 
       {/* Footer */}
-      <footer className="py-10 bg-au-neutral-900 text-white/80">
+      <footer className="py-10 bg-thinkgrants-gray-900 text-white/80">
         <div className="au-container">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
@@ -253,10 +252,10 @@ const GrantCard: React.FC<{
       </CardHeader>
       <CardContent>
         <p className="mb-4">{description}</p>
-        <p className="text-lg font-semibold text-[#cf2e2e]">{amount}</p>
+        <p className="text-lg font-semibold text-thinkgrants-blue">{amount}</p>
       </CardContent>
       <CardFooter>
-        <Button asChild variant="outline" className="w-full border-[#cf2e2e] text-[#cf2e2e] hover:bg-[#cf2e2e] hover:text-white">
+        <Button asChild variant="outline" className="w-full border-thinkgrants-blue text-thinkgrants-blue hover:bg-thinkgrants-blue hover:text-white">
           <Link to="/login">Apply Now</Link>
         </Button>
       </CardFooter>
@@ -272,7 +271,7 @@ const TestimonialCard: React.FC<{
   return (
     <Card className="card-hover">
       <CardContent className="pt-6">
-        <div className="mb-4 text-4xl text-[#cf2e2e]">"</div>
+        <div className="mb-4 text-4xl text-thinkgrants-blue">"</div>
         <p className="italic mb-6">{quote}</p>
         <div>
           <p className="font-semibold">{author}</p>
@@ -290,7 +289,7 @@ const ProcessStep: React.FC<{
 }> = ({ number, title, description }) => {
   return (
     <div className="flex flex-col items-center text-center">
-      <div className="w-16 h-16 rounded-full bg-[#cf2e2e] text-white flex items-center justify-center text-2xl font-bold mb-4">
+      <div className="w-16 h-16 rounded-full bg-thinkgrants-blue text-white flex items-center justify-center text-2xl font-bold mb-4">
         {number}
       </div>
       <h3 className="text-xl font-bold mb-2">{title}</h3>
