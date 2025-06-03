@@ -16,7 +16,7 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 221 83% 53%;
+    --primary: 357 62% 30%;
     --primary-foreground: 0 0% 100%;
 
     --secondary: 210 40% 96.1%;
@@ -33,18 +33,18 @@
 
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 221 83% 53%;
+    --ring: 357 62% 30%;
 
     --radius: 0.5rem;
 
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 221 83% 53%;
+    --sidebar-primary: 357 62% 30%;
     --sidebar-primary-foreground: 0 0% 98%;
     --sidebar-accent: 240 4.8% 95.9%;
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 221 83% 53%;
+    --sidebar-ring: 357 62% 30%;
   }
 
   .dark {
@@ -57,7 +57,7 @@
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 221 83% 53%;
+    --primary: 357 62% 30%;
     --primary-foreground: 0 0% 100%;
 
     --secondary: 217.2 32.6% 17.5%;
@@ -74,16 +74,16 @@
 
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
-    --ring: 221 83% 53%;
+    --ring: 357 62% 30%;
     
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 221 83% 53%;
+    --sidebar-primary: 357 62% 30%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 240 3.7% 15.9%;
     --sidebar-accent-foreground: 240 4.8% 95.9%;
     --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 221 83% 53%;
+    --sidebar-ring: 357 62% 30%;
   }
 }
 
@@ -113,7 +113,7 @@
 
   /* Primary button with proper contrast */
   .btn-primary {
-    @apply bg-thinkgrants-blue text-white hover:bg-thinkgrants-blue-700;
+    @apply bg-thinkgrants-maroon text-white hover:bg-thinkgrants-maroon-dark;
   }
 
   /* White background areas with dark text */
@@ -121,35 +121,35 @@
     @apply bg-white text-thinkgrants-gray-900;
   }
 
-  /* Blue background areas with white text */
-  .blue-area {
-    @apply bg-thinkgrants-blue text-white;
+  /* Maroon background areas with white text */
+  .maroon-area {
+    @apply bg-thinkgrants-maroon text-white;
   }
 
   /* Gradient backgrounds matching logo */
   .gradient-primary {
-    @apply bg-gradient-to-r from-thinkgrants-blue to-thinkgrants-accent;
+    @apply bg-gradient-to-r from-thinkgrants-maroon to-thinkgrants-accent;
   }
 
   .gradient-light {
-    @apply bg-gradient-to-r from-thinkgrants-blue-light to-thinkgrants-accent-light;
+    @apply bg-gradient-to-r from-thinkgrants-maroon-light to-thinkgrants-accent-light;
   }
 
   /* Legacy AU classes for backwards compatibility */
   .au-red {
-    @apply bg-thinkgrants-blue;
+    @apply bg-thinkgrants-maroon;
   }
 
   .au-purple {
-    @apply text-thinkgrants-blue;
+    @apply text-thinkgrants-maroon;
   }
 
   .au-purple-dark {
-    @apply text-thinkgrants-blue-800;
+    @apply text-thinkgrants-maroon-dark;
   }
 
   .text-au-red {
-    @apply text-thinkgrants-blue;
+    @apply text-thinkgrants-maroon;
   }
 
   .text-au-neutral-600 {
@@ -169,14 +169,14 @@
   }
 
   .bg-au-purple {
-    @apply bg-thinkgrants-blue;
+    @apply bg-thinkgrants-maroon;
   }
 
   .border-au-red {
-    @apply border-thinkgrants-blue;
+    @apply border-thinkgrants-maroon;
   }
 
   .hover\:bg-au-red:hover {
-    @apply hover:bg-thinkgrants-blue;
+    @apply hover:bg-thinkgrants-maroon;
   }
 }

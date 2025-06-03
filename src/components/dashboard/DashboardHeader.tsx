@@ -30,7 +30,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({ title, subtitle }) =>
           <Button size="icon" variant="ghost" className="relative" asChild>
             <Link to="/notifications">
               <Bell className="h-5 w-5" />
-              <span className="absolute top-0 right-0 h-2 w-2 rounded-full bg-thinkgrants-blue" />
+              <span className="absolute top-0 right-0 h-2 w-2 rounded-full bg-thinkgrants-maroon" />
             </Link>
           </Button>
         </div>

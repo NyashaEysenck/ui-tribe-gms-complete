@@ -67,25 +67,25 @@ export default {
 					ring: 'hsl(var(--sidebar-ring))'
 				},
 				thinkgrants: {
-					blue: {
-						DEFAULT: '#2563eb',
-						dark: '#1d4ed8',
-						light: '#60a5fa',
-						50: '#eff6ff',
-						100: '#dbeafe',
-						200: '#bfdbfe',
-						300: '#93c5fd',
-						400: '#60a5fa',
-						500: '#3b82f6',
-						600: '#2563eb',
-						700: '#1d4ed8',
-						800: '#1e40af',
-						900: '#1e3a8a'
+					maroon: {
+						DEFAULT: '#7A1C1E',
+						dark: '#5D1518',
+						light: '#A02527',
+						50: '#FDF2F2',
+						100: '#FCE8E8',
+						200: '#F7D0D1',
+						300: '#EFA9AB',
+						400: '#E37779',
+						500: '#D14649',
+						600: '#B52A2E',
+						700: '#961F23',
+						800: '#7A1C1E',
+						900: '#5D1518'
 					},
 					accent: {
-						DEFAULT: '#06b6d4',
-						light: '#67e8f9',
-						dark: '#0891b2'
+						DEFAULT: '#C5A572',
+						light: '#D4B894',
+						dark: '#A08956'
 					},
 					gray: {
 						50: '#f8fafc',
@@ -103,9 +103,9 @@ export default {
 				// Keep AU colors for backwards compatibility
 				au: {
 					red: {
-						DEFAULT: '#2563eb',
-						dark: '#1d4ed8',
-						light: '#60a5fa',
+						DEFAULT: '#7A1C1E',
+						dark: '#5D1518',
+						light: '#A02527',
 					},
 					neutral: {
 						100: '#f1f5f9',

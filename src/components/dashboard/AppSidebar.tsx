@@ -198,7 +198,7 @@ export const AppSidebar: React.FC = () => {
 
   return (
     <Sidebar className="h-screen border-r" collapsible="icon">
-      <SidebarHeader className="border-b py-3 px-4 flex justify-between items-center bg-thinkgrants-blue text-white">
+      <SidebarHeader className="border-b py-3 px-4 flex justify-between items-center bg-thinkgrants-maroon text-white">
         <div className="flex items-center gap-2">
           <img 
             src={getAssetPath("/lovable-uploads/bddbc08a-a185-4878-85ac-a3c91e22fce5.png")} 
@@ -360,7 +360,7 @@ export const AppSidebar: React.FC = () => {
               className={cn(
                 "flex items-center px-4 py-2 text-sm rounded-md transition-colors group",
                 isActiveRoute(item.path)
-                  ? "bg-thinkgrants-blue/10 text-thinkgrants-blue font-medium"
+                  ? "bg-thinkgrants-maroon/10 text-thinkgrants-maroon font-medium"
                   : "text-thinkgrants-gray-600 hover:bg-thinkgrants-gray-100"
               )}
             >
