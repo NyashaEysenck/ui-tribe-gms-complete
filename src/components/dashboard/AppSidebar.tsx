@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -200,11 +201,11 @@ export const AppSidebar: React.FC = () => {
       <SidebarHeader className="border-b py-3 px-4 flex justify-between items-center bg-[#cf2e2e] text-white">
         <div className="flex items-center gap-2">
           <img 
-            src={getAssetPath("/lovable-uploads/4af217f9-8ca2-4acc-8ba4-9320b16cf567.png")} 
-            alt="Africa University" 
+            src={getAssetPath("/lovable-uploads/bddbc08a-a185-4878-85ac-a3c91e22fce5.png")} 
+            alt="ThinkGrants" 
             className="h-16 w-auto" 
           />
-          <span className="text-lg font-semibold group-data-[collapsible=icon]:hidden">AU GMS</span>
+          <span className="text-lg font-semibold group-data-[collapsible=icon]:hidden">ThinkGrants</span>
         </div>
         <div className="flex items-center">
           <NotificationCenter />

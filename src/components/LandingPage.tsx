@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -14,8 +15,8 @@ const LandingPage: React.FC = () => {
           <div className="flex flex-col md:flex-row items-center">
             <div className="max-w-3xl">
               <img 
-                src={getAssetPath("/lovable-uploads/4af217f9-8ca2-4acc-8ba4-9320b16cf567.png")} 
-                alt="Africa University" 
+                src={getAssetPath("/lovable-uploads/bddbc08a-a185-4878-85ac-a3c91e22fce5.png")} 
+                alt="ThinkGrants" 
                 className="h-32 mb-6"
               />
               <h1 className="text-4xl md:text-5xl font-bold mb-6">
@@ -181,7 +182,7 @@ const LandingPage: React.FC = () => {
         <div className="au-container">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
-              <h3 className="font-bold text-lg mb-4">Africa University</h3>
+              <h3 className="font-bold text-lg mb-4">ThinkGrants</h3>
               <p>Empowering research and innovation through comprehensive grant management.</p>
             </div>
             <div>
@@ -212,7 +213,7 @@ const LandingPage: React.FC = () => {
             </div>
           </div>
           <div className="mt-10 pt-6 border-t border-white/10 text-center">
-            <p>© {new Date().getFullYear()} Africa University Research Grant Management. All rights reserved.</p>
+            <p>© {new Date().getFullYear()} ThinkGrants Research Grant Management. All rights reserved.</p>
           </div>
         </div>
       </footer>
