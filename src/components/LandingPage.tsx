@@ -9,7 +9,7 @@ const LandingPage: React.FC = () => {
   return (
     <div className="flex flex-col min-h-screen">
       {/* Hero Section */}
-      <section className="relative bg-thinkgrants-maroon py-24 text-white">
+      <section className="relative py-24 text-white" style={{ backgroundColor: '#2596be' }}>
         <div className="au-container">
           <div className="flex flex-col md:flex-row items-center">
             <div className="max-w-3xl">
@@ -27,7 +27,7 @@ const LandingPage: React.FC = () => {
               </div>
               
               <h1 className="text-4xl md:text-5xl font-bold mb-6">
-                Research Grant Funding
+                ThinkGrants
               </h1>
               <p className="text-xl mb-8 text-white/90">
                 Unlock funding opportunities for your groundbreaking research. Apply today and turn your innovative ideas into reality.
