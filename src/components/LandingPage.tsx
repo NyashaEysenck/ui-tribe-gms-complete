@@ -13,24 +13,26 @@ const LandingPage: React.FC = () => {
         <div className="au-container">
           <div className="flex flex-col md:flex-row items-center">
             <div className="max-w-3xl">
-              {/* New Tagline */}
+              <img 
+                src={getAssetPath("/lovable-uploads/bddbc08a-a185-4878-85ac-a3c91e22fce5.png")} 
+                alt="ThinkGrants" 
+                className="h-32 mb-6"
+              />
+              
+              {/* Tagline below logo */}
               <div className="mb-6">
                 <p className="text-lg md:text-xl font-medium text-white/90 tracking-wide">
                   Empowering Research • Fueling Innovation
                 </p>
               </div>
               
-              <img 
-                src={getAssetPath("/lovable-uploads/bddbc08a-a185-4878-85ac-a3c91e22fce5.png")} 
-                alt="ThinkGrants" 
-                className="h-32 mb-6"
-              />
               <h1 className="text-4xl md:text-5xl font-bold mb-6">
                 Research Grant Funding
               </h1>
               <p className="text-xl mb-8 text-white/90">
                 Unlock funding opportunities for your groundbreaking research. Apply today and turn your innovative ideas into reality.
               </p>
+              
               <div className="flex flex-wrap gap-4">
                 <Button asChild size="lg" variant="white" className="bg-white text-thinkgrants-maroon hover:bg-white/90">
                   <Link to="/login">Apply Now</Link>
