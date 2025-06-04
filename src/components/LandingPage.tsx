@@ -9,7 +9,7 @@ const LandingPage: React.FC = () => {
   return (
     <div className="flex flex-col min-h-screen">
       {/* Hero Section */}
-      <section className="relative py-24 text-white" style={{ backgroundColor: '#2596be' }}>
+      <section className="relative py-24 text-white" style={{ backgroundColor: '#761420' }}>
         <div className="au-container">
           <div className="flex flex-col md:flex-row items-center">
             <div className="max-w-3xl">
