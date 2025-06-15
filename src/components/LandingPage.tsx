@@ -1,7 +1,8 @@
+
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowRight, Calendar, DollarSign, FileText, BarChart3, Users, CheckCircle2 } from "lucide-react";
+import { ArrowRight, Calendar, DollarSign, FileText, BarChart3, Users, CheckCircle2, Search, Award, TrendingUp, Shield, Clock, FileCheck } from "lucide-react";
 import { Link } from "react-router-dom";
 import { getAssetPath } from "@/lib/assetUtils";
 
@@ -22,23 +23,23 @@ const LandingPage: React.FC = () => {
               {/* Tagline below logo */}
               <div className="mb-6">
                 <p className="text-lg md:text-xl font-medium text-white/90 tracking-wide">
-                  Empowering Research • Fueling Innovation
+                  🌐 ThinkGrants: Empowering Research • Fueling Innovation
                 </p>
               </div>
               
               <h1 className="text-4xl md:text-5xl font-bold mb-6">
-                ThinkGrants
+                Full-Lifecycle Grants Management System
               </h1>
               <p className="text-xl mb-8 text-white/90">
-                Unlock funding opportunities for your groundbreaking research. Apply today and turn your innovative ideas into reality.
+                Streamline your entire grants journey from discovery to final reporting. Supporting researchers, grants managers, and administrators with secure, role-based access.
               </p>
               
               <div className="flex flex-wrap gap-4">
                 <Button asChild size="lg" variant="white" className="bg-white text-thinkgrants-maroon hover:bg-white/90">
-                  <Link to="/login">Apply Now</Link>
+                  <Link to="/login">Start Application</Link>
                 </Button>
                 <Button asChild size="lg" variant="outline" className="border-white bg-transparent text-white hover:bg-white/10">
-                  <Link to="/opportunities">Browse Grants</Link>
+                  <Link to="/opportunities">Browse Opportunities</Link>
                 </Button>
               </div>
             </div>
@@ -47,121 +48,142 @@ const LandingPage: React.FC = () => {
         <div className="absolute bottom-0 left-0 w-full h-16 bg-gradient-to-t from-background to-transparent"></div>
       </section>
 
-      {/* Why Apply Section */}
+      {/* Core System Modules */}
       <section className="py-16">
         <div className="au-container">
-          <h2 className="text-3xl font-bold text-center mb-4">Why Apply for Research Grants?</h2>
+          <h2 className="text-3xl font-bold text-center mb-4">Core System Modules</h2>
           <p className="text-lg text-center max-w-3xl mx-auto mb-12 text-thinkgrants-gray-600">
-            Africa University is committed to supporting innovative research that addresses real-world challenges and contributes to knowledge advancement.
+            ThinkGrants supports the complete grant lifecycle with distinct phases for maximum efficiency and compliance.
           </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <ModuleCard 
+              icon={<Search className="h-8 w-8 text-blue-600" />}
+              phase="🔵 Application Phase"
+              title="Pre-Award Discovery"
+              description="Discover opportunities, submit applications, and track submissions with automated notifications and funder requirement displays."
+              features={["Grant Opportunities Listing", "Call Notifications", "Application Submission", "Requirements Display"]}
+            />
+            <ModuleCard 
+              icon={<FileCheck className="h-8 w-8 text-green-600" />}
+              phase="🟢 Review Phase"
+              title="Pre-Award Evaluation"
+              description="Structured evaluation process with workflow management, reviewer assignments, and real-time status tracking."
+              features={["Review Workflow", "Status Tracking", "Reviewer Assignment", "Assessment Criteria"]}
+            />
+            <ModuleCard 
+              icon={<Award className="h-8 w-8 text-yellow-600" />}
+              phase="🟡 Award Phase"
+              title="Funding Confirmation"
+              description="Manage the transition from pre-award to post-award with notifications, assessments, and contract management."
+              features={["Award Notifications", "Pre-Award Assessment", "Contract Management", "MOU Signing"]}
+            />
+            <ModuleCard 
+              icon={<TrendingUp className="h-8 w-8 text-blue-600" />}
+              phase="🔵 Project Tracking"
+              title="Post-Award Monitoring"
+              description="Monitor project execution, track milestones, manage deliverables, and handle IP reporting."
+              features={["Progress Reports", "Milestone Tracking", "Deliverables Management", "IP Reports"]}
+            />
+            <ModuleCard 
+              icon={<BarChart3 className="h-8 w-8 text-purple-600" />}
+              phase="🟣 Project Reports"
+              title="Final Post-Award"
+              description="Ensure accountability with budget reports, performance tracking, M&E assessments, and claims processing."
+              features={["Budget Reports", "Performance Reports", "M&E Reports", "Claims & Reimbursements"]}
+            />
+            <ModuleCard 
+              icon={<Shield className="h-8 w-8 text-thinkgrants-maroon" />}
+              phase="Cross-Cutting"
+              title="System Foundation"
+              description="Authentication, document management, notifications, analytics, and audit trails across all phases."
+              features={["RBAC Security", "Document Management", "Notifications", "Analytics Dashboard"]}
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* Grant Categories */}
+      <section className="py-16 bg-thinkgrants-gray-100">
+        <div className="au-container">
+          <h2 className="text-3xl font-bold text-center mb-12">Grant Categories Supported</h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-6">
+            <CategoryCard title="ORI Grants" icon="🔬" />
+            <CategoryCard title="External Funding" icon="🌍" />
+            <CategoryCard title="Government" icon="🏛️" />
+            <CategoryCard title="Fellowships" icon="🎓" />
+            <CategoryCard title="Scholarships" icon="📚" />
+            <CategoryCard title="Travel/Conference" icon="✈️" />
+            <CategoryCard title="Industry Design" icon="🏭" />
+          </div>
+        </div>
+      </section>
+
+      {/* User Roles */}
+      <section className="py-16">
+        <div className="au-container">
+          <h2 className="text-3xl font-bold text-center mb-12">Role-Based Access Control</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <RoleCard
+              title="Researcher"
+              icon={<Users className="h-8 w-8 text-blue-600" />}
+              responsibilities={[
+                "Search and view grant opportunities",
+                "Create and submit applications",
+                "Track application status",
+                "Submit project reports",
+                "Manage personal profile"
+              ]}
+            />
+            <RoleCard
+              title="Grants Manager"
+              icon={<FileText className="h-8 w-8 text-green-600" />}
+              responsibilities={[
+                "Create and publish grant calls",
+                "Manage applications and reviewers",
+                "Monitor review progress",
+                "Facilitate award notifications",
+                "Generate reports and analytics"
+              ]}
+            />
+            <RoleCard
+              title="Admin (Technical)"
+              icon={<Shield className="h-8 w-8 text-purple-600" />}
+              responsibilities={[
+                "Manage all user accounts",
+                "Configure system settings",
+                "Oversee security and audit logs",
+                "Troubleshoot system issues",
+                "Maintain database integrity"
+              ]}
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* Key Features */}
+      <section className="py-16 bg-thinkgrants-gray-100">
+        <div className="au-container">
+          <h2 className="text-3xl font-bold text-center mb-12">Cross-Cutting Functionalities</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             <FeatureCard 
-              icon={<DollarSign className="h-8 w-8 text-thinkgrants-maroon" />}
-              title="Financial Support"
-              description="Secure funding from $5,000 to $500,000 for your research projects across various disciplines."
-            />
-            <FeatureCard 
-              icon={<Users className="h-8 w-8 text-thinkgrants-maroon" />}
-              title="Collaboration Opportunities"
-              description="Connect with fellow researchers and institutions worldwide to expand your research network."
+              icon={<Shield className="h-8 w-8 text-thinkgrants-maroon" />}
+              title="Secure Authentication"
+              description="Role-based access control with secure login, password management, and user profile management."
             />
             <FeatureCard 
               icon={<FileText className="h-8 w-8 text-thinkgrants-maroon" />}
-              title="Publication Support"
-              description="Receive assistance for publishing your research in high-impact journals and conferences."
+              title="Document Management"
+              description="Centralized storage with versioning, search capabilities, and secure file handling."
+            />
+            <FeatureCard 
+              icon={<Clock className="h-8 w-8 text-thinkgrants-maroon" />}
+              title="Smart Notifications"
+              description="Automated emails and in-app alerts for status changes, deadlines, and new opportunities."
             />
             <FeatureCard 
               icon={<BarChart3 className="h-8 w-8 text-thinkgrants-maroon" />}
-              title="Career Advancement"
-              description="Enhance your academic profile and reputation through funded research projects."
-            />
-          </div>
-        </div>
-      </section>
-
-      {/* Featured Opportunities */}
-      <section className="py-16 bg-thinkgrants-gray-100">
-        <div className="au-container">
-          <h2 className="text-3xl font-bold text-center mb-12">Featured Funding Opportunities</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <GrantCard
-              title="Climate Change Research Initiative"
-              deadline="June 30, 2024"
-              amount="$75,000"
-              description="Research exploring innovative solutions to mitigate climate change effects in sub-Saharan Africa."
-            />
-            <GrantCard
-              title="Healthcare Innovation Fund"
-              deadline="July 15, 2024"
-              amount="$120,000"
-              description="Supporting research in healthcare delivery systems and medical technology advancements."
-            />
-            <GrantCard
-              title="Agricultural Sustainability Grant"
-              deadline="August 10, 2024"
-              amount="$90,000"
-              description="Funding research on sustainable agricultural practices and food security solutions."
-            />
-          </div>
-          <div className="text-center mt-10">
-            <Button asChild variant="outline" className="group text-thinkgrants-maroon border-thinkgrants-maroon hover:bg-thinkgrants-maroon hover:text-white">
-              <Link to="/opportunities">
-                View All Opportunities 
-                <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-              </Link>
-            </Button>
-          </div>
-        </div>
-      </section>
-
-      {/* Success Stories */}
-      <section className="py-16">
-        <div className="au-container">
-          <h2 className="text-3xl font-bold text-center mb-12">Success Stories</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <TestimonialCard 
-              quote="The grant funding I received from AU transformed my research on sustainable water systems. It enabled me to collect field data across three countries and present findings at international conferences."
-              author="Dr. Chidi Okonkwo"
-              role="Environmental Sciences Department"
-            />
-            <TestimonialCard 
-              quote="As a young researcher, the AU grant program gave me the opportunity to conduct pioneering work in digital health solutions. The support went beyond just funding, providing mentorship and resources."
-              author="Dr. Amina Ibrahim"
-              role="Computer Science Department"
-            />
-            <TestimonialCard 
-              quote="The research grant enabled our team to develop a new agricultural technique that has been adopted by communities across Zimbabwe. This wouldn't have been possible without Africa University's support."
-              author="Prof. Samuel Nkomo"
-              role="Agricultural Sciences Department"
-            />
-          </div>
-        </div>
-      </section>
-
-      {/* Application Process */}
-      <section className="py-16 bg-thinkgrants-gray-100">
-        <div className="au-container">
-          <h2 className="text-3xl font-bold text-center mb-12">Simple Application Process</h2>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <ProcessStep
-              number="1"
-              title="Create Account"
-              description="Register using your @africau.edu email to access the grant management system."
-            />
-            <ProcessStep
-              number="2"
-              title="Select Opportunity"
-              description="Browse available grants and select the one that matches your research focus."
-            />
-            <ProcessStep
-              number="3"
-              title="Submit Proposal"
-              description="Complete the application form with your research proposal and budget details."
-            />
-            <ProcessStep
-              number="4"
-              title="Track Progress"
-              description="Monitor your application status and receive notifications on the outcome."
+              title="Analytics & Reports"
+              description="Customizable dashboards and comprehensive reporting across all grant activities."
             />
           </div>
         </div>
@@ -170,13 +192,13 @@ const LandingPage: React.FC = () => {
       {/* CTA Section */}
       <section className="py-16 bg-thinkgrants-maroon text-white">
         <div className="au-container text-center">
-          <h2 className="text-3xl font-bold mb-6">Ready to Fund Your Research?</h2>
+          <h2 className="text-3xl font-bold mb-6">Ready to Transform Your Grants Process?</h2>
           <p className="text-xl mb-8 max-w-2xl mx-auto">
-            Join hundreds of Africa University researchers who have successfully secured grants for their innovative work.
+            Join the comprehensive ThinkGrants platform and experience streamlined grant management from discovery to completion.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <Button asChild size="lg" variant="white" className="bg-white text-thinkgrants-maroon hover:bg-white/90">
-              <Link to="/register">Create Account</Link>
+              <Link to="/register">Get Started</Link>
             </Button>
             <Button asChild size="lg" variant="outline" className="border-white bg-transparent text-white hover:bg-white/10">
               <Link to="/login">Sign In</Link>
@@ -191,41 +213,105 @@ const LandingPage: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
               <h3 className="font-bold text-lg mb-4">ThinkGrants</h3>
-              <p>Empowering research and innovation through comprehensive grant management.</p>
+              <p>Full-lifecycle grants management platform empowering research and innovation.</p>
             </div>
             <div>
-              <h3 className="font-bold text-lg mb-4">Quick Links</h3>
+              <h3 className="font-bold text-lg mb-4">For Researchers</h3>
               <ul className="space-y-2">
-                <li><Link to="/login" className="hover:text-white">Sign In</Link></li>
-                <li><Link to="/register" className="hover:text-white">Register</Link></li>
-                <li><Link to="/opportunities" className="hover:text-white">Opportunities</Link></li>
-                <li><Link to="/help" className="hover:text-white">Help & Support</Link></li>
+                <li><Link to="/opportunities" className="hover:text-white">Find Opportunities</Link></li>
+                <li><Link to="/login" className="hover:text-white">Submit Application</Link></li>
+                <li><Link to="/my-grants" className="hover:text-white">Track Progress</Link></li>
               </ul>
             </div>
             <div>
-              <h3 className="font-bold text-lg mb-4">Resources</h3>
+              <h3 className="font-bold text-lg mb-4">For Managers</h3>
               <ul className="space-y-2">
-                <li><a href="#" className="hover:text-white">Application Guide</a></li>
-                <li><a href="#" className="hover:text-white">FAQs</a></li>
-                <li><a href="#" className="hover:text-white">Research Policies</a></li>
+                <li><Link to="/create-opportunity" className="hover:text-white">Create Grants</Link></li>
+                <li><Link to="/applications" className="hover:text-white">Review Applications</Link></li>
+                <li><Link to="/reporting" className="hover:text-white">Generate Reports</Link></li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="font-bold text-lg mb-4">Support</h3>
+              <ul className="space-y-2">
+                <li><a href="#" className="hover:text-white">Documentation</a></li>
+                <li><a href="#" className="hover:text-white">User Guide</a></li>
                 <li><a href="#" className="hover:text-white">Contact Support</a></li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="font-bold text-lg mb-4">Contact</h3>
-              <ul className="space-y-2">
-                <li>Research Office</li>
-                <li>Email: grants@africau.edu</li>
-                <li>Phone: (+263) 771-234-567</li>
               </ul>
             </div>
           </div>
           <div className="mt-10 pt-6 border-t border-white/10 text-center">
-            <p>© {new Date().getFullYear()} ThinkGrants Research Grant Management. All rights reserved.</p>
+            <p>© {new Date().getFullYear()} ThinkGrants - Full-Lifecycle Grants Management System. All rights reserved.</p>
           </div>
         </div>
       </footer>
     </div>
+  );
+};
+
+const ModuleCard: React.FC<{
+  icon: React.ReactNode;
+  phase: string;
+  title: string;
+  description: string;
+  features: string[];
+}> = ({ icon, phase, title, description, features }) => {
+  return (
+    <Card className="card-hover h-full">
+      <CardHeader>
+        <div className="mb-4">{icon}</div>
+        <div className="text-sm font-medium text-muted-foreground mb-2">{phase}</div>
+        <CardTitle className="text-lg">{title}</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <p className="mb-4 text-sm">{description}</p>
+        <ul className="space-y-1">
+          {features.map((feature, index) => (
+            <li key={index} className="text-xs text-muted-foreground flex items-start">
+              <CheckCircle2 className="h-3 w-3 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
+              {feature}
+            </li>
+          ))}
+        </ul>
+      </CardContent>
+    </Card>
+  );
+};
+
+const CategoryCard: React.FC<{
+  title: string;
+  icon: string;
+}> = ({ title, icon }) => {
+  return (
+    <Card className="card-hover text-center p-4">
+      <div className="text-3xl mb-2">{icon}</div>
+      <p className="text-sm font-medium">{title}</p>
+    </Card>
+  );
+};
+
+const RoleCard: React.FC<{
+  title: string;
+  icon: React.ReactNode;
+  responsibilities: string[];
+}> = ({ title, icon, responsibilities }) => {
+  return (
+    <Card className="card-hover">
+      <CardHeader>
+        <div className="mb-4">{icon}</div>
+        <CardTitle>{title}</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <ul className="space-y-2">
+          {responsibilities.map((responsibility, index) => (
+            <li key={index} className="text-sm flex items-start">
+              <CheckCircle2 className="h-4 w-4 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
+              {responsibility}
+            </li>
+          ))}
+        </ul>
+      </CardContent>
+    </Card>
   );
 };
 
@@ -244,66 +330,6 @@ const FeatureCard: React.FC<{
         <p>{description}</p>
       </CardContent>
     </Card>
-  );
-};
-
-const GrantCard: React.FC<{
-  title: string;
-  deadline: string;
-  amount: string;
-  description: string;
-}> = ({ title, deadline, amount, description }) => {
-  return (
-    <Card className="card-hover">
-      <CardHeader>
-        <CardTitle>{title}</CardTitle>
-        <CardDescription>Deadline: {deadline}</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <p className="mb-4">{description}</p>
-        <p className="text-lg font-semibold text-thinkgrants-maroon">{amount}</p>
-      </CardContent>
-      <CardFooter>
-        <Button asChild variant="outline" className="w-full border-thinkgrants-maroon text-thinkgrants-maroon hover:bg-thinkgrants-maroon hover:text-white">
-          <Link to="/login">Apply Now</Link>
-        </Button>
-      </CardFooter>
-    </Card>
-  );
-};
-
-const TestimonialCard: React.FC<{
-  quote: string;
-  author: string;
-  role: string;
-}> = ({ quote, author, role }) => {
-  return (
-    <Card className="card-hover">
-      <CardContent className="pt-6">
-        <div className="mb-4 text-4xl text-thinkgrants-maroon">"</div>
-        <p className="italic mb-6">{quote}</p>
-        <div>
-          <p className="font-semibold">{author}</p>
-          <p className="text-sm text-muted-foreground">{role}</p>
-        </div>
-      </CardContent>
-    </Card>
-  );
-};
-
-const ProcessStep: React.FC<{
-  number: string;
-  title: string;
-  description: string;
-}> = ({ number, title, description }) => {
-  return (
-    <div className="flex flex-col items-center text-center">
-      <div className="w-16 h-16 rounded-full bg-thinkgrants-maroon text-white flex items-center justify-center text-2xl font-bold mb-4">
-        {number}
-      </div>
-      <h3 className="text-xl font-bold mb-2">{title}</h3>
-      <p>{description}</p>
-    </div>
   );
 };
 
