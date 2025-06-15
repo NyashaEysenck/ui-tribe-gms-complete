@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { User, UserRole } from "@/types/auth";
 import { toast } from "sonner";
@@ -110,38 +109,32 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
   }, []);
 
+  // ---- DEMO LOGIN - allow any credentials ----
   const login = async (email: string, password: string) => {
-    console.log("Login attempt for:", email);
+    console.log("Demo login mode: allowing any credentials for login:", email);
     setIsLoading(true);
     try {
-      const { data, error } = await db.auth.signInWithPassword({
+      // Assign demo role based on email for testing
+      let role: UserRole = "researcher";
+      if (email.toLowerCase().includes("admin")) {
+        role = "admin";
+      } else if (email.toLowerCase().includes("grant")) {
+        role = "grant_office";
+      }
+      // Set a fake user
+      setUser({
+        id: "demo-" + Math.random().toString(36).substring(2, 10),
+        name: email.split("@")[0] || "Demo User",
         email,
-        password,
+        role,
+        profileImage: "/placeholder.svg",
       });
-
-      if (error) {
-        console.error("Login error:", error.message);
-        throw error;
-      }
-
-      if (data?.user) {
-        console.log("Login successful for:", data.user.email);
-        // Create a basic user object right away
-        setUser({
-          id: data.user.id,
-          name: data.user.user_metadata?.name || "User",
-          email: data.user.email || "",
-          role: (data.user.user_metadata?.role as UserRole) || "researcher",
-          profileImage: "/placeholder.svg"
-        });
-        toast.success("Login successful");
-        return;
-      }
-
-      throw new Error("No user returned from authentication");
+      // Simulate a delay like a real API call
+      await new Promise((res) => setTimeout(res, 300));
+      toast.success("Demo login successful");
+      return;
     } catch (error: any) {
-      console.error("Login failed:", error);
-      toast.error(error.message || "Login failed. Please check your credentials.");
+      toast.error("Demo login failed");
       throw error;
     } finally {
       setIsLoading(false);
